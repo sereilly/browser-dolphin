@@ -1,0 +1,10 @@
+build/Debug
+build/Release
+build/client/Debug
+build/client/Release
+build/server/Debug
+build/server/Release
+build/ipch
+*.suo
+*.sdf
+*.opensdf
