@@ -1,15 +1,19 @@
+<!DOCTYPE html>
 <html>
 <head>
+	<meta name="viewport" content="width=320, initial-scale=1"/>
 	<title>Browser Dolphin</title>
-	<script src="/socket.io/socket.io.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
   <script src="client.js"></script>
+  <script type="text/javascript" src="jsmpg.js"></script>
 </head>
-<body style="background:black; color:white;">
-		<input id="messageField"></input><button id="sendBtn">Send</button>
-    <video width="320" height="240" controls autoplay>
-  <source src="http://localhost/screen.mp4">
-Your browser does not support the video tag.
-</video>
+<body>		
+	<canvas id="videoCanvas" width="640" height="480">
+		<p>Please use a browser that supports the Canvas Element</p>
+	</canvas>
+  <br>
+  <input id="messageField"></input><button id="sendBtn">Send</button>
 </body>
 </html>
