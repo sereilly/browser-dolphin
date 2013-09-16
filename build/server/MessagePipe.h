@@ -14,6 +14,8 @@ public:
   int ReadMessage();
   ~MessagePipe();
   MessageStack& GetMessages() { return m_messageStack; }
+  static DWORD WINAPI ThreadFunc(void* data);
+  static MessagePipe& Instance();
 private:
   MessageStack m_messageStack;
   HANDLE hPipe;
