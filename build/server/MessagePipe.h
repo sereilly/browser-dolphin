@@ -16,6 +16,7 @@ public:
   MessageStack& GetMessages() { return m_messageStack; }
   static DWORD WINAPI ThreadFunc(void* data);
   static MessagePipe& Instance();
+  MessageStack FilteredStack(char code, int player);
 private:
   MessageStack m_messageStack;
   HANDLE hPipe;

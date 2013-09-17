@@ -27,7 +27,7 @@ inline double round(double x) { return (x-floor(x))>0.5 ? ceil(x) : floor(x); } 
 #include "MatrixMath.h"
 
 #include "../../Movie.h"
-#include "../../../browser-dolphin/build/server/MessagePipe.h"
+#include "../../../build/server/MessagePipe.h"
 
 namespace
 {
@@ -384,37 +384,22 @@ bool Wiimote::Step()
 
 void Wiimote::UpdateButtonsFromMessages(wm_core* buttons)
 {
-  MessageStack& messageStack = MessagePipe::Instance().GetMessages();
-  MessageStack ms;
+  MessageStack messageStack = MessagePipe::Instance().FilteredStack('k', 1);
   
   if (!messageStack.IsEmpty())
   {
     *buttons = 0;
   }
+
   while (!messageStack.IsEmpty())
   {
+    wm_core mask;
     std::string message = messageStack.Pop();
     char code;
+    int player;
     std::istringstream iss(message);
-    iss >> code;
-    wm_core mask;
-    if (code == 'k')
-    {
-      iss >> mask;
-      *buttons |= mask;
-    }
-    else if (code == 'r')
-    {
-      Reset();
-    }
-    else
-    {
-      ms.Push(message);
-    }
-  }
-  while (!ms.IsEmpty())
-  {
-    messageStack.Push(ms.Pop());
+    iss >> player >> code >> mask;
+    *buttons |= mask;
   }
 }
 

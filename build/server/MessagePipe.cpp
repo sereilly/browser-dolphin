@@ -1,5 +1,7 @@
 #include "MessagePipe.h"
 #include <stdio.h>
+#include <sstream>
+
 #define g_szPipeName "\\\\.\\Pipe\\MyNamedPipe"
 MessagePipe::MessagePipe()
 {
@@ -55,4 +57,30 @@ MessagePipe& MessagePipe::Instance()
     initialized = true;
   }
   return pipe;
+}
+
+MessageStack MessagePipe::FilteredStack( char code, int player )
+{
+  MessageStack matches, nonmatches;
+  while (!m_messageStack.IsEmpty())
+  {
+    std::string message = m_messageStack.Pop();
+    char c;
+    int p;
+    std::istringstream iss(message);
+    iss >> p >> c;
+    if (c == code && p == player)
+    {
+      matches.Push(message);
+    }
+    else
+    {
+      nonmatches.Push(message);
+    }
+  }
+  while (!nonmatches.IsEmpty())
+  {
+    m_messageStack.Push(nonmatches.Pop());
+  }
+  return matches;
 }

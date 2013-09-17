@@ -1,6 +1,4 @@
 // Sean Reilly
-// All content (c) 2011 DigiPen (USA) Corporation, all rights reserved.
-// 
 #pragma once
 #include <stack>
 #include <Windows.h>

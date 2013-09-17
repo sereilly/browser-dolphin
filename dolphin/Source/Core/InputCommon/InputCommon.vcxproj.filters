@@ -29,7 +29,7 @@
     <ClCompile Include="Src\ControllerInterface\Device.cpp">
       <Filter>ControllerInterface</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\browser-dolphin\build\server\MessagePipe.cpp" />
+    <ClCompile Include="..\..\..\..\build\server\MessagePipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\ControllerEmu.h" />
@@ -64,11 +64,12 @@
     <ClInclude Include="Src\ControllerInterface\DInput\DInput.h">
       <Filter>ControllerInterface\DInput</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\browser-dolphin\build\server\ConcurrentStack.h" />
-    <ClInclude Include="..\..\..\..\browser-dolphin\build\server\MessagePipe.h" />
+    <ClInclude Include="..\..\..\..\build\server\MessagePipe.h" />
+    <ClInclude Include="..\..\..\..\build\server\ConcurrentStack.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CMakeLists.txt" />
+    <None Include="..\..\..\..\build.bat" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="ControllerInterface">

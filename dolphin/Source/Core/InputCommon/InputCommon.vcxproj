@@ -164,7 +164,7 @@
     <Lib />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\browser-dolphin\build\server\MessagePipe.cpp" />
+    <ClCompile Include="..\..\..\..\build\server\MessagePipe.cpp" />
     <ClCompile Include="Src\ControllerEmu.cpp" />
     <ClCompile Include="Src\ControllerInterface\ControllerInterface.cpp" />
     <ClCompile Include="Src\ControllerInterface\Device.cpp" />
@@ -179,8 +179,8 @@
     <ClCompile Include="Src\UDPWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\browser-dolphin\build\server\ConcurrentStack.h" />
-    <ClInclude Include="..\..\..\..\browser-dolphin\build\server\MessagePipe.h" />
+    <ClInclude Include="..\..\..\..\build\server\ConcurrentStack.h" />
+    <ClInclude Include="..\..\..\..\build\server\MessagePipe.h" />
     <ClInclude Include="Src\ControllerEmu.h" />
     <ClInclude Include="Src\ControllerInterface\ControllerInterface.h" />
     <ClInclude Include="Src\ControllerInterface\Device.h" />
@@ -197,6 +197,7 @@
     <ClInclude Include="Src\UDPWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\build.bat" />
     <None Include="CMakeLists.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

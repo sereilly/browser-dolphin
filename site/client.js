@@ -1,6 +1,6 @@
 var socket;
 var buttons = 0;
-
+var player = 1;
 $(document).ready(function() {
   InitMessaging();
   InitPlayer();
@@ -51,7 +51,7 @@ $(document).ready(function() {
  {
   $("#videoCanvas").mousemove(function(event) {
     convertCoords(event);
-    socket.send("m " + event.offsetX + " " + event.offsetY);
+    socket.send(player + " m " + event.offsetX + " " + event.offsetY);
   });
   $("#videoCanvas").mousedown(function(event) {
     convertCoords(event);
@@ -78,11 +78,11 @@ function InitKeyboardTracking()
   $(window).keydown(function(event){
     console.log(event.keyCode);
     buttons =  buttons | buttonMap[event.keyCode];
-    socket.send("k " + buttons);
+    socket.send(player + " k " + buttons);
   }); 
   $(window).keyup(function(event){
     buttons = buttons & ~buttonMap[event.keyCode];
-    socket.send("k " + buttons);
+    socket.send(player + " k " + buttons);
   }); 
 }
  

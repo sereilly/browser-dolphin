@@ -2,7 +2,7 @@
 #include "DInputKeyboardMouse.h"
 #include "DInput.h"
 #include <sstream>
-#include "..\..\..\..\browser-dolphin\build\server\MessagePipe.h"
+#include "..\..\..\..\build\server\MessagePipe.h"
 
 	// (lower would be more sensitive) user can lower sensitivity by setting range
 	// seems decent here ( at 8 ), I don't think anyone would need more sensitive than this
@@ -155,26 +155,14 @@ void GetMousePos(float* const x, float* const y)
 
 void GetMousePosFromMessages(float* x, float* y)
 {
-  MessageStack& messageStack = MessagePipe::Instance().GetMessages();
-  MessageStack ms;
+  MessageStack messageStack = MessagePipe::Instance().FilteredStack('m', 1);
   while (!messageStack.IsEmpty())
   {
     std::string message = messageStack.Pop();
     char code;
+    int player;
     std::istringstream iss(message);
-    iss >> code;
-    if (code == 'm')
-    {
-      iss >> *x >> *y;
-    }
-    else
-    {
-      ms.Push(message);
-    }
-  }
-  while (!ms.IsEmpty())
-  {
-    messageStack.Push(ms.Pop());
+    iss >> player >> code >> *x >> *y;
   }
 }
 
