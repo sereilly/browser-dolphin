@@ -6,6 +6,7 @@ $(document).ready(function() {
   InitPlayer();
   InitMouseTracking();
   InitKeyboardTracking();
+  InitDropdowns();
  });
  
  function InitMessaging()
@@ -49,6 +50,9 @@ $(document).ready(function() {
  
  function InitMouseTracking()
  {
+  // TODO: Mouse tracking for all
+  if (player != 1)
+    return;
   $("#videoCanvas").mousemove(function(event) {
     convertCoords(event);
     socket.send(player + " m " + event.offsetX + " " + event.offsetY);
@@ -84,5 +88,12 @@ function InitKeyboardTracking()
     buttons = buttons & ~buttonMap[event.keyCode];
     socket.send(player + " k " + buttons);
   }); 
+}
+
+function InitDropdowns()
+{
+  $(playerSelect).on("change", function() {
+    player = $(this).val();
+  });
 }
  

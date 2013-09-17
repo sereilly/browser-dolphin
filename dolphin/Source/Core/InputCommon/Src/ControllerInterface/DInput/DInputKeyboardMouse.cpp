@@ -203,7 +203,7 @@ bool KeyboardMouse::UpdateInput()
 		// update mouse cursor
 		//GetMousePos(&m_state_in.cursor.x, &m_state_in.cursor.y);
     GetMousePosFromMessages(&m_state_in.cursor.x, &m_state_in.cursor.y);
-
+    
 		return true;
 	}
 

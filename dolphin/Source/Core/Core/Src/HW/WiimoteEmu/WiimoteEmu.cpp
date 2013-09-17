@@ -384,7 +384,7 @@ bool Wiimote::Step()
 
 void Wiimote::UpdateButtonsFromMessages(wm_core* buttons)
 {
-  MessageStack messageStack = MessagePipe::Instance().FilteredStack('k', 1);
+  MessageStack messageStack = MessagePipe::Instance().FilteredStack('k', m_index + 1);
   
   if (!messageStack.IsEmpty())
   {
