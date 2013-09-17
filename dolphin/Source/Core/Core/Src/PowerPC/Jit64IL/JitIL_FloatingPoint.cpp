@@ -1,19 +1,6 @@
-// Copyright (C) 2003 Dolphin Project.
-
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, version 2.0.
-
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License 2.0 for more details.
-
-// A copy of the GPL 2.0 should have been included with the program.
-// If not, see http://www.gnu.org/licenses/
-
-// Official SVN repository and contact information can be found at
-// http://code.google.com/p/dolphin-emu/
+// Copyright 2013 Dolphin Emulator Project
+// Licensed under GPLv2
+// Refer to the license.txt file included.
 
 #include "Common.h"
 
@@ -30,7 +17,7 @@
 void JitIL::fp_arith_s(UGeckoInstruction inst)
 {
 	INSTRUCTION_START
-	JITDISABLE(FloatingPoint)
+	JITDISABLE(bJITFloatingPointOff)
 	if (inst.Rc || (inst.SUBOP5 != 25 && inst.SUBOP5 != 20 &&
 	                inst.SUBOP5 != 21 && inst.SUBOP5 != 26)) {
 		Default(inst); return;
@@ -73,7 +60,7 @@ void JitIL::fp_arith_s(UGeckoInstruction inst)
 void JitIL::fmaddXX(UGeckoInstruction inst)
 {
 	INSTRUCTION_START
-	JITDISABLE(FloatingPoint)
+	JITDISABLE(bJITFloatingPointOff)
 	if (inst.Rc) {
 		Default(inst); return;
 	}
@@ -101,7 +88,7 @@ void JitIL::fmaddXX(UGeckoInstruction inst)
 void JitIL::fmrx(UGeckoInstruction inst)
 {
 	INSTRUCTION_START
-	JITDISABLE(FloatingPoint)
+	JITDISABLE(bJITFloatingPointOff)
 	if (inst.Rc) {
 		Default(inst); return;
 	}
@@ -113,7 +100,7 @@ void JitIL::fmrx(UGeckoInstruction inst)
 void JitIL::fcmpx(UGeckoInstruction inst)
 {
 	INSTRUCTION_START
-	JITDISABLE(FloatingPoint)
+	JITDISABLE(bJITFloatingPointOff)
 	IREmitter::InstLoc lhs, rhs, res;
 	lhs = ibuild.EmitLoadFReg(inst.FA);
 	rhs = ibuild.EmitLoadFReg(inst.FB);
@@ -126,7 +113,7 @@ void JitIL::fcmpx(UGeckoInstruction inst)
 void JitIL::fsign(UGeckoInstruction inst)
 {
 	INSTRUCTION_START
-	JITDISABLE(FloatingPoint)
+	JITDISABLE(bJITFloatingPointOff)
 	Default(inst);
 	return;
 

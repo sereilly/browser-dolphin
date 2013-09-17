@@ -7,11 +7,10 @@ set(SRCS	Src/ActionReplay.cpp
 			Src/CoreParameter.cpp
 			Src/CoreTiming.cpp
 			Src/DSPEmulator.cpp
+			Src/ec_wii.cpp
 			Src/GeckoCodeConfig.cpp
 			Src/GeckoCode.cpp
-			Src/MemTools.cpp
 			Src/Movie.cpp
-			Src/NetPlay.cpp
 			Src/NetPlayClient.cpp
 			Src/NetPlayServer.cpp
 			Src/PatchEngine.cpp
@@ -112,8 +111,10 @@ set(SRCS	Src/ActionReplay.cpp
 			Src/HW/SI.cpp
 			Src/HW/SI_DeviceAMBaseboard.cpp
 			Src/HW/SI_Device.cpp
+			Src/HW/SI_DeviceDanceMat.cpp
 			Src/HW/SI_DeviceGBA.cpp
 			Src/HW/SI_DeviceGCController.cpp
+			Src/HW/SI_DeviceGCSteeringWheel.cpp
 			Src/HW/Sram.cpp
 			Src/HW/StreamADPCM.cpp
 			Src/HW/SystemTimers.cpp
@@ -132,12 +133,15 @@ set(SRCS	Src/ActionReplay.cpp
 			Src/HW/WiimoteEmu/Encryption.cpp
 			Src/HW/WiimoteEmu/Speaker.cpp
 			Src/HW/WiimoteReal/WiimoteReal.cpp
+			Src/IPC_HLE/ICMPLin.cpp
 			Src/IPC_HLE/WII_IPC_HLE.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_DI.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_es.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_FileIO.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_fs.cpp
+			Src/IPC_HLE/WII_Socket.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_net.cpp
+			Src/IPC_HLE/WII_IPC_HLE_Device_net_ssl.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_sdio_slot0.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_usb.cpp
 			Src/IPC_HLE/WII_IPC_HLE_Device_usb_kbd.cpp
@@ -151,6 +155,7 @@ set(SRCS	Src/ActionReplay.cpp
 			Src/PowerPC/PPCTables.cpp
 			Src/PowerPC/Profiler.cpp
 			Src/PowerPC/SignatureDB.cpp
+			Src/PowerPC/JitInterface.cpp
 			Src/PowerPC/Interpreter/Interpreter_Branch.cpp
 			Src/PowerPC/Interpreter/Interpreter.cpp
 			Src/PowerPC/Interpreter/Interpreter_FloatingPoint.cpp
@@ -160,6 +165,12 @@ set(SRCS	Src/ActionReplay.cpp
 			Src/PowerPC/Interpreter/Interpreter_Paired.cpp
 			Src/PowerPC/Interpreter/Interpreter_SystemRegisters.cpp
 			Src/PowerPC/Interpreter/Interpreter_Tables.cpp
+			Src/PowerPC/JitCommon/JitBase.cpp
+			Src/PowerPC/JitCommon/JitCache.cpp)
+
+if(NOT _M_GENERIC)
+	set(SRCS ${SRCS}
+			Src/x64MemTools.cpp
 			Src/PowerPC/Jit64IL/IR.cpp
 			Src/PowerPC/Jit64IL/IR_X86.cpp
 			Src/PowerPC/Jit64IL/JitILAsm.cpp
@@ -185,13 +196,43 @@ set(SRCS	Src/ActionReplay.cpp
 			Src/PowerPC/Jit64/Jit_Paired.cpp
 			Src/PowerPC/Jit64/JitRegCache.cpp
 			Src/PowerPC/Jit64/Jit_SystemRegisters.cpp
-			Src/PowerPC/JitCommon/JitAsmCommon.cpp
 			Src/PowerPC/JitCommon/JitBackpatch.cpp
-			Src/PowerPC/JitCommon/JitBase.cpp
-			Src/PowerPC/JitCommon/JitCache.cpp
+			Src/PowerPC/JitCommon/JitAsmCommon.cpp
 			Src/PowerPC/JitCommon/Jit_Util.cpp)
+endif()
+if(_M_ARM)
+	set(SRCS ${SRCS}
+			Src/ArmMemTools.cpp
+			Src/PowerPC/JitArm32/Jit.cpp
+			Src/PowerPC/JitArm32/JitAsm.cpp
+			Src/PowerPC/JitArm32/JitArm_BackPatch.cpp
+			Src/PowerPC/JitArm32/JitArm_Tables.cpp
+			Src/PowerPC/JitArm32/JitArmCache.cpp
+			Src/PowerPC/JitArm32/JitRegCache.cpp
+			Src/PowerPC/JitArm32/JitFPRCache.cpp
+			Src/PowerPC/JitArm32/JitArm_Branch.cpp
+			Src/PowerPC/JitArm32/JitArm_Integer.cpp
+			Src/PowerPC/JitArm32/JitArm_LoadStore.cpp
+			Src/PowerPC/JitArm32/JitArm_FloatingPoint.cpp
+			Src/PowerPC/JitArm32/JitArm_Paired.cpp
+			Src/PowerPC/JitArm32/JitArm_LoadStorePaired.cpp
+			Src/PowerPC/JitArm32/JitArm_SystemRegisters.cpp
+			Src/PowerPC/JitArm32/JitArm_LoadStoreFloating.cpp)
+endif()
 
-set(LIBS bdisasm inputcommon videoogl videosoftware sfml-network)
+set(LIBS bdisasm inputcommon videosoftware sfml-network)
+
+if(NOT USE_GLES OR USE_GLES3)
+	set(LIBS ${LIBS} videoogl)
+endif()
+
+if(LIBUSB_FOUND)
+	# Using shared LibUSB
+	set(LIBS	${LIBS}	${LIBUSB_LIBRARIES})
+	set(SRCS	${SRCS}	Src/IPC_HLE/WII_IPC_HLE_Device_hid.cpp)
+endif(LIBUSB_FOUND)
+
+set(LIBS ${LIBS} ${POLARSSL_LIBRARY})
 
 if(WIN32)
 	set(SRCS ${SRCS} Src/HW/BBA-TAP/TAP_Win32.cpp Src/stdafx.cpp
@@ -215,6 +256,10 @@ endif(PORTAUDIO_FOUND)
 if(OPROFILE_FOUND)
 	set(LIBS ${LIBS} opagent bfd)
 endif(OPROFILE_FOUND)
+
+if(GDBSTUB)
+	set(SRCS ${SRCS} Src/PowerPC/GDBStub.cpp)
+endif(GDBSTUB)
 
 add_library(core STATIC ${SRCS})
 target_link_libraries(core ${LIBS})

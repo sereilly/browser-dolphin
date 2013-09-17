@@ -1,19 +1,7 @@
-// Copyright (C) 2003 Dolphin Project.
+// Copyright 2013 Dolphin Emulator Project
+// Licensed under GPLv2
+// Refer to the license.txt file included.
 
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, version 2.0.
-
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License 2.0 for more details.
-
-// A copy of the GPL 2.0 should have been included with the program.
-// If not, see http://www.gnu.org/licenses/
-
-// Official SVN repository and contact information can be found at
-// http://code.google.com/p/dolphin-emu/
 
 // File description
 // -------------
@@ -36,6 +24,7 @@
 #include <vector>
 
 #include "Common.h"
+#include "CommonPaths.h"
 #include "IniFile.h"
 #include "BootManager.h"
 #include "Volume.h"
@@ -46,7 +35,7 @@
 #include "Host.h"
 #include "VideoBackendBase.h"
 #include "Movie.h"
-
+#include "NetPlayProto.h"
 
 namespace BootManager
 {
@@ -55,9 +44,10 @@ namespace BootManager
 // Apply fire liberally
 struct ConfigCache
 {
-	bool valid, bCPUThread, bSkipIdle, bEnableFPRF, bMMU, bMMUBAT,
-		bVBeam, bFastDiscSpeed, bMergeBlocks, bDSPHLE, bDisableWiimoteSpeaker;
-	int iTLBHack;
+	bool valid, bCPUThread, bSkipIdle, bEnableFPRF, bMMU, bDCBZOFF, m_EnableJIT, bDSPThread,
+		bVBeamSpeedHack, bSyncGPU, bFastDiscSpeed, bMergeBlocks, bDSPHLE, bHLE_BS2;
+	int iTLBHack, iCPUCore;
+	TEXIDevices m_EXIDevice[2];
 	std::string strBackend;
 };
 static ConfigCache config_cache;
@@ -73,62 +63,65 @@ bool BootCore(const std::string& _rFilename)
 	StartUp.m_BootType = SCoreStartupParameter::BOOT_ISO;
 	StartUp.m_strFilename = _rFilename;
 	SConfig::GetInstance().m_LastFilename = _rFilename;
+	SConfig::GetInstance().SaveSettings();
 	StartUp.bRunCompareClient = false;
 	StartUp.bRunCompareServer = false;
 
 	StartUp.hInstance = Host_GetInstance();
 
 	// If for example the ISO file is bad we return here
-	if (!StartUp.AutoSetup(SCoreStartupParameter::BOOT_DEFAULT)) return false;
+	if (!StartUp.AutoSetup(SCoreStartupParameter::BOOT_DEFAULT))
+		return false;
 
 	// Load game specific settings
-	IniFile game_ini;
 	std::string unique_id = StartUp.GetUniqueID();
-	StartUp.m_strGameIni = File::GetUserPath(D_GAMECONFIG_IDX) + unique_id + ".ini";
-	if (unique_id.size() == 6 && game_ini.Load(StartUp.m_strGameIni.c_str()))
+	StartUp.m_strGameIniDefault = File::GetSysDirectory() + GAMESETTINGS_DIR DIR_SEP + unique_id + ".ini";
+	StartUp.m_strGameIniLocal = File::GetUserPath(D_GAMESETTINGS_IDX) + unique_id + ".ini";
+
+	if (unique_id.size() == 6)
 	{
+		IniFile game_ini;
+		game_ini.Load(StartUp.m_strGameIniDefault);
+		game_ini.Load(StartUp.m_strGameIniLocal, true);
+
 		config_cache.valid = true;
 		config_cache.bCPUThread = StartUp.bCPUThread;
 		config_cache.bSkipIdle = StartUp.bSkipIdle;
+		config_cache.iCPUCore = StartUp.iCPUCore;
 		config_cache.bEnableFPRF = StartUp.bEnableFPRF;
 		config_cache.bMMU = StartUp.bMMU;
-		config_cache.bMMUBAT = StartUp.bMMUBAT;
+		config_cache.bDCBZOFF = StartUp.bDCBZOFF;
 		config_cache.iTLBHack = StartUp.iTLBHack;
-		config_cache.bVBeam = StartUp.bVBeam;
+		config_cache.bVBeamSpeedHack = StartUp.bVBeamSpeedHack;
+		config_cache.bSyncGPU = StartUp.bSyncGPU;
 		config_cache.bFastDiscSpeed = StartUp.bFastDiscSpeed;
 		config_cache.bMergeBlocks = StartUp.bMergeBlocks;
 		config_cache.bDSPHLE = StartUp.bDSPHLE;
-		config_cache.bDisableWiimoteSpeaker = StartUp.bDisableWiimoteSpeaker;
 		config_cache.strBackend = StartUp.m_strVideoBackend;
+		config_cache.bHLE_BS2 = StartUp.bHLE_BS2;
+		config_cache.m_EnableJIT = SConfig::GetInstance().m_EnableJIT;
+		config_cache.bDSPThread = StartUp.bDSPThread;
+		config_cache.m_EXIDevice[0] = SConfig::GetInstance().m_EXIDevice[0];
+		config_cache.m_EXIDevice[1] = SConfig::GetInstance().m_EXIDevice[1];
 
 		// General settings
 		game_ini.Get("Core", "CPUThread",			&StartUp.bCPUThread, StartUp.bCPUThread);
 		game_ini.Get("Core", "SkipIdle",			&StartUp.bSkipIdle, StartUp.bSkipIdle);
 		game_ini.Get("Core", "EnableFPRF",			&StartUp.bEnableFPRF, StartUp.bEnableFPRF);
 		game_ini.Get("Core", "MMU",					&StartUp.bMMU, StartUp.bMMU);
-		game_ini.Get("Core", "BAT",					&StartUp.bMMUBAT, StartUp.bMMUBAT);
 		game_ini.Get("Core", "TLBHack",				&StartUp.iTLBHack, StartUp.iTLBHack);
-		game_ini.Get("Core", "VBeam",				&StartUp.bVBeam, StartUp.bVBeam);
+		game_ini.Get("Core", "DCBZ",				&StartUp.bDCBZOFF, StartUp.bDCBZOFF);
+		game_ini.Get("Core", "VBeam",				&StartUp.bVBeamSpeedHack, StartUp.bVBeamSpeedHack);
+		game_ini.Get("Core", "SyncGPU",				&StartUp.bSyncGPU, StartUp.bSyncGPU);
 		game_ini.Get("Core", "FastDiscSpeed",		&StartUp.bFastDiscSpeed, StartUp.bFastDiscSpeed);
 		game_ini.Get("Core", "BlockMerging",		&StartUp.bMergeBlocks, StartUp.bMergeBlocks);
 		game_ini.Get("Core", "DSPHLE",				&StartUp.bDSPHLE, StartUp.bDSPHLE);
-		game_ini.Get("Wii", "DisableWiimoteSpeaker",&StartUp.bDisableWiimoteSpeaker, StartUp.bDisableWiimoteSpeaker);
+		game_ini.Get("Core", "DSPThread",			&StartUp.bDSPThread, StartUp.bDSPThread);
 		game_ini.Get("Core", "GFXBackend", &StartUp.m_strVideoBackend, StartUp.m_strVideoBackend.c_str());
+		game_ini.Get("Core", "CPUCore",				&StartUp.iCPUCore, StartUp.iCPUCore);
+		game_ini.Get("Core", "HLE_BS2",				&StartUp.bHLE_BS2, StartUp.bHLE_BS2);
 		VideoBackend::ActivateBackend(StartUp.m_strVideoBackend);
 
-		if (Movie::IsPlayingInput() && Movie::IsConfigSaved())
-		{
-			StartUp.bCPUThread = Movie::IsDualCore();
-			StartUp.bSkipIdle = Movie::IsSkipIdle();
-			StartUp.bDSPHLE = Movie::IsDSPHLE();
-			StartUp.bProgressive = Movie::IsProgressive();
-			StartUp.bFastDiscSpeed = Movie::IsFastDiscSpeed();
-			if (Movie::IsUsingMemcard() && Movie::IsStartingFromClearSave() && !StartUp.bWii)
-			{
-				if (File::Exists("Movie.raw"))
-					File::Delete("Movie.raw");
-			}
-		}
 		// Wii settings
 		if (StartUp.bWii)
 		{
@@ -136,6 +129,33 @@ bool BootCore(const std::string& _rFilename)
 			SConfig::GetInstance().m_SYSCONF->Save();
 		}
 	} 
+
+	// movie settings
+	if (Movie::IsPlayingInput() && Movie::IsConfigSaved())
+	{
+		StartUp.bCPUThread = Movie::IsDualCore();
+		StartUp.bSkipIdle = Movie::IsSkipIdle();
+		StartUp.bDSPHLE = Movie::IsDSPHLE();
+		StartUp.bProgressive = Movie::IsProgressive();
+		StartUp.bFastDiscSpeed = Movie::IsFastDiscSpeed();
+		StartUp.iCPUCore = Movie::GetCPUMode();
+		StartUp.bSyncGPU = Movie::IsSyncGPU();
+		if (Movie::IsUsingMemcard() && Movie::IsStartingFromClearSave() && !StartUp.bWii)
+		{
+			if (File::Exists(File::GetUserPath(D_GCUSER_IDX) + "Movie.raw"))
+				File::Delete(File::GetUserPath(D_GCUSER_IDX) + "Movie.raw");
+		}
+	}
+
+	if (NetPlay::IsNetPlayRunning())
+	{
+		StartUp.bCPUThread = g_NetPlaySettings.m_CPUthread;
+		StartUp.bDSPHLE = g_NetPlaySettings.m_DSPHLE;
+		StartUp.bEnableMemcardSaving = g_NetPlaySettings.m_WriteToMemcard;
+		SConfig::GetInstance().m_EnableJIT = g_NetPlaySettings.m_DSPEnableJIT;
+		SConfig::GetInstance().m_EXIDevice[0] = g_NetPlaySettings.m_EXIDevice[0];
+		SConfig::GetInstance().m_EXIDevice[1] = g_NetPlaySettings.m_EXIDevice[1];
+	}
 
 	// Run the game
 	// Init the core
@@ -154,22 +174,29 @@ void Stop()
 
 	SCoreStartupParameter& StartUp = SConfig::GetInstance().m_LocalCoreStartupParameter;
 
+	StartUp.m_strUniqueID = "00000000";
 	if (config_cache.valid)
 	{
 		config_cache.valid = false;
 		StartUp.bCPUThread = config_cache.bCPUThread;
 		StartUp.bSkipIdle = config_cache.bSkipIdle;
+		StartUp.iCPUCore = config_cache.iCPUCore;
 		StartUp.bEnableFPRF = config_cache.bEnableFPRF;
 		StartUp.bMMU = config_cache.bMMU;
-		StartUp.bMMUBAT = config_cache.bMMUBAT;
+		StartUp.bDCBZOFF = config_cache.bDCBZOFF;
 		StartUp.iTLBHack = config_cache.iTLBHack;
-		StartUp.bVBeam = config_cache.bVBeam;
+		StartUp.bVBeamSpeedHack = config_cache.bVBeamSpeedHack;
+		StartUp.bSyncGPU = config_cache.bSyncGPU;
 		StartUp.bFastDiscSpeed = config_cache.bFastDiscSpeed;
 		StartUp.bMergeBlocks = config_cache.bMergeBlocks;
 		StartUp.bDSPHLE = config_cache.bDSPHLE;
-		StartUp.bDisableWiimoteSpeaker = config_cache.bDisableWiimoteSpeaker;
+		StartUp.bDSPThread = config_cache.bDSPThread;
 		StartUp.m_strVideoBackend = config_cache.strBackend;
 		VideoBackend::ActivateBackend(StartUp.m_strVideoBackend);
+		StartUp.bHLE_BS2 = config_cache.bHLE_BS2;
+		SConfig::GetInstance().m_EnableJIT = config_cache.m_EnableJIT;
+		SConfig::GetInstance().m_EXIDevice[0] = config_cache.m_EXIDevice[0];
+		SConfig::GetInstance().m_EXIDevice[1] = config_cache.m_EXIDevice[1];
 	}
 }
 

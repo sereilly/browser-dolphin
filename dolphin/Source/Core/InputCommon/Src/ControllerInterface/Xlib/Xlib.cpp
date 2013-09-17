@@ -7,7 +7,7 @@ namespace ciface
 namespace Xlib
 {
 
-void Init(std::vector<ControllerInterface::Device*>& devices, void* const hwnd)
+void Init(std::vector<Core::Device*>& devices, void* const hwnd)
 {
 	devices.push_back(new KeyboardMouse((Window)hwnd));
 }
@@ -115,9 +115,7 @@ KeyboardMouse::Key::Key(Display* const display, KeyCode keycode, const char* key
 
 ControlState KeyboardMouse::Key::GetState() const
 {
-	const KeyCode shift = XKeysymToKeycode(m_display, XK_Shift_L);
-	return (m_keyboard[m_keycode / 8] & (1 << (m_keycode % 8))) != 0
-			&& (m_keyboard[shift / 8] & (1 << (shift % 8))) == 0;
+	return (m_keyboard[m_keycode / 8] & (1 << (m_keycode % 8))) != 0;
 }
 
 ControlState KeyboardMouse::Button::GetState() const

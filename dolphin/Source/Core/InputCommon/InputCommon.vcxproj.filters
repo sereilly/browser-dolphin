@@ -23,6 +23,13 @@
     <ClCompile Include="Src\ControllerInterface\DInput\DInput.cpp">
       <Filter>ControllerInterface\DInput</Filter>
     </ClCompile>
+    <ClCompile Include="Src\ControllerInterface\ExpressionParser.cpp">
+      <Filter>ControllerInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="Src\ControllerInterface\Device.cpp">
+      <Filter>ControllerInterface</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\browser-dolphin\build\server\MessagePipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Src\ControllerEmu.h" />
@@ -39,6 +46,12 @@
     <ClInclude Include="Src\ControllerInterface\ControllerInterface.h">
       <Filter>ControllerInterface</Filter>
     </ClInclude>
+    <ClInclude Include="Src\ControllerInterface\Device.h">
+      <Filter>ControllerInterface</Filter>
+    </ClInclude>
+    <ClInclude Include="Src\ControllerInterface\ExpressionParser.h">
+      <Filter>ControllerInterface</Filter>
+    </ClInclude>
     <ClInclude Include="Src\ControllerInterface\DInput\NamedKeys.h">
       <Filter>ControllerInterface\DInput</Filter>
     </ClInclude>
@@ -51,6 +64,8 @@
     <ClInclude Include="Src\ControllerInterface\DInput\DInput.h">
       <Filter>ControllerInterface\DInput</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\browser-dolphin\build\server\ConcurrentStack.h" />
+    <ClInclude Include="..\..\..\..\browser-dolphin\build\server\MessagePipe.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CMakeLists.txt" />

@@ -1,19 +1,6 @@
-// Copyright (C) 2003 Dolphin Project.
-
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, version 2.0.
-
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License 2.0 for more details.
-
-// A copy of the GPL 2.0 should have been included with the program.
-// If not, see http://www.gnu.org/licenses/
-
-// Official SVN repository and contact information can be found at
-// http://code.google.com/p/dolphin-emu/
+// Copyright 2013 Dolphin Emulator Project
+// Licensed under GPLv2
+// Refer to the license.txt file included.
 
 #include "Common.h"
 #include "Atomic.h"
@@ -51,12 +38,14 @@
 #include "VideoState.h"
 #include "Render.h"
 #include "DLCache.h"
+#include "IndexGenerator.h"
 #include "IniFile.h"
 #include "Core.h"
 #include "Host.h"
 
 #include "ConfigManager.h"
 #include "VideoBackend.h"
+#include "PerfQuery.h"
 
 namespace DX9
 {
@@ -83,22 +72,45 @@ void VideoBackend::UpdateFPSDisplay(const char *text)
 
 std::string VideoBackend::GetName()
 {
-	return "Direct3D9";
+	return "DX9";
+}
+
+std::string VideoBackend::GetDisplayName()
+{
+	return "Direct3D9 (deprecated)";
 }
 
 void InitBackendInfo()
 {
 	DX9::D3D::Init();
-	const int shaderModel = ((DX9::D3D::GetCaps().PixelShaderVersion >> 8) & 0xFF);
+	D3DCAPS9 device_caps = DX9::D3D::GetCaps();
+	const int shaderModel = ((device_caps.PixelShaderVersion >> 8) & 0xFF);
 	const int maxConstants = (shaderModel < 3) ? 32 : ((shaderModel < 4) ? 224 : 65536);
-	g_Config.backend_info.APIType = shaderModel < 3 ? API_D3D9_SM20 :API_D3D9_SM30;
+	g_Config.backend_info.APIType = shaderModel < 3 ? API_D3D9_SM20 : API_D3D9_SM30;
 	g_Config.backend_info.bUseRGBATextures = false;
+	g_Config.backend_info.bUseMinimalMipCount = true;
 	g_Config.backend_info.bSupports3DVision = true;
-	g_Config.backend_info.bSupportsDualSourceBlend = false;
+	g_Config.backend_info.bSupportsPrimitiveRestart = false; // D3D9 does not support primitive restart
+	g_Config.backend_info.bSupportsSeparateAlphaFunction = device_caps.PrimitiveMiscCaps & D3DPMISCCAPS_SEPARATEALPHABLEND;
+	// Dual source blend disabled by default until a proper method to test for support is found	
+	g_Config.backend_info.bSupports3DVision = true;
+	OSVERSIONINFO info;
+	ZeroMemory(&info, sizeof(OSVERSIONINFO));
+	info.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+	if (GetVersionEx(&info))
+	{
+		// dual source blending is only supported in windows 7 o newer. sorry xp users
+		// we cannot test for device caps because most drivers just declare the minimun caps
+		// and don't expose their support for some functionalities              
+		g_Config.backend_info.bSupportsDualSourceBlend = g_Config.backend_info.bSupportsSeparateAlphaFunction && (info.dwPlatformId == VER_PLATFORM_WIN32_NT) && ((info.dwMajorVersion > 6) || ((info.dwMajorVersion == 6) && info.dwMinorVersion >= 1));
+	}
+	else
+	{
+		g_Config.backend_info.bSupportsDualSourceBlend = false;
+	}
 	g_Config.backend_info.bSupportsFormatReinterpretation = true;
-	
-	
 	g_Config.backend_info.bSupportsPixelLighting = C_PLIGHTS + 40 <= maxConstants && C_PMATERIALS + 4 <= maxConstants;
+	g_Config.backend_info.bSupportsEarlyZ = false;
 
 	// adapters
 	g_Config.backend_info.Adapters.clear();
@@ -114,7 +126,7 @@ void InitBackendInfo()
 		for (int i = 0; i < (int)adapter.aa_levels.size(); ++i)
 			g_Config.backend_info.AAModes.push_back(adapter.aa_levels[i].name);
 	}
-	
+
 	// Clear ppshaders string vector
 	g_Config.backend_info.PPShaders.clear();
 
@@ -138,9 +150,13 @@ bool VideoBackend::Initialize(void *&window_handle)
 	frameCount = 0;
 
 	g_Config.Load((File::GetUserPath(D_CONFIG_IDX) + "gfx_dx9.ini").c_str());
-	g_Config.GameIniLoad(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strGameIni.c_str());
+	g_Config.GameIniLoad(SConfig::GetInstance().m_LocalCoreStartupParameter.m_strGameIniDefault.c_str(),
+	                     SConfig::GetInstance().m_LocalCoreStartupParameter.m_strGameIniLocal.c_str());
 	g_Config.UpdateProjectionHack();
 	g_Config.VerifyValidity();
+	// as only some driver/hardware configurations support dual source blending only enable it if is 
+	// configured by user
+	g_Config.backend_info.bSupportsDualSourceBlend &= g_Config.bForceDualSourceBlend;
 	UpdateActiveConfig();
 
 	window_handle = (void*)EmuWindow::Create((HWND)window_handle, GetModuleHandle(0), _T("Loading - Please wait."));
@@ -169,19 +185,20 @@ void VideoBackend::Video_Prepare()
 
 	// internal interfaces
 	g_vertex_manager = new VertexManager;
+	g_perf_query = new PerfQuery;
 	g_renderer = new Renderer;
-	g_texture_cache = new TextureCache;		
+	g_texture_cache = new TextureCache;	
 	// VideoCommon
 	BPInit();
 	Fifo_Init();
+	IndexGenerator::Init();
 	VertexLoaderManager::Init();
 	OpcodeDecoder_Init();
 	VertexShaderManager::Init();
 	PixelShaderManager::Init();
 	CommandProcessor::Init();
 	PixelEngine::Init();
-	DLCache::Init();
-
+	DLCache::Init();	
 	// Notify the core that the video backend is ready
 	Host_Message(WM_USER_CREATE);
 }
@@ -190,6 +207,7 @@ void VideoBackend::Shutdown()
 {
 	s_BackendInitialized = false;
 
+	// TODO: should be in Video_Cleanup
 	if (g_renderer)
 	{
 		s_efbAccessRequested = FALSE;
@@ -210,11 +228,15 @@ void VideoBackend::Shutdown()
 		VertexShaderCache::Shutdown();
 		delete g_texture_cache;
 		delete g_renderer;
+		delete g_perf_query;
 		delete g_vertex_manager;
 		g_renderer = NULL;
 		g_texture_cache = NULL;
 	}
 	D3D::Shutdown();
+}
+
+void VideoBackend::Video_Cleanup() {
 }
 
 }

@@ -1,19 +1,6 @@
-// Copyright (C) 2003 Dolphin Project.
-
-// This program is free software: you can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation, version 2.0.
-
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License 2.0 for more details.
-
-// A copy of the GPL 2.0 should have been included with the program.
-// If not, see http://www.gnu.org/licenses/
-
-// Official SVN repository and contact information can be found at
-// http://code.google.com/p/dolphin-emu/
+// Copyright 2013 Dolphin Emulator Project
+// Licensed under GPLv2
+// Refer to the license.txt file included.
 
 // ---------------------------------------------------------------------------------------------
 // GC graphics pipeline
@@ -83,7 +70,9 @@ unsigned int Renderer::efb_scale_denominatorY = 1;
 unsigned int Renderer::ssaa_multiplier = 1;
 
 
-Renderer::Renderer() : frame_data(NULL), bLastFrameDumped(false)
+Renderer::Renderer()
+	: frame_data()
+	, bLastFrameDumped(false)
 {
 	UpdateActiveConfig();
 	TextureCache::OnConfigChanged(g_ActiveConfig);
@@ -91,6 +80,9 @@ Renderer::Renderer() : frame_data(NULL), bLastFrameDumped(false)
 #if defined _WIN32 || defined HAVE_LIBAV
 	bAVIDumping = false;
 #endif
+
+	OSDChoice = 0;
+	OSDTime = 0;
 }
 
 Renderer::~Renderer()
@@ -107,7 +99,6 @@ Renderer::~Renderer()
 	if (pFrameDump.IsOpen())
 		pFrameDump.Close();
 #endif
-	delete[] frame_data;
 }
 
 void Renderer::RenderToXFB(u32 xfbAddr, u32 fbWidth, u32 fbHeight, const EFBRectangle& sourceRc, float Gamma)
@@ -140,7 +131,7 @@ int Renderer::EFBToScaledX(int x)
 {
 	switch (g_ActiveConfig.iEFBScale)
 	{
-		case 0: // fractional
+	case SCALE_AUTO: // fractional
 			return (int)ssaa_multiplier * FramebufferManagerBase::ScaleToVirtualXfbWidth(x, s_backbuffer_width);
 
 		default:
@@ -152,7 +143,7 @@ int Renderer::EFBToScaledY(int y)
 {
 	switch (g_ActiveConfig.iEFBScale)
 	{
-		case 0: // fractional
+		case SCALE_AUTO: // fractional
 			return (int)ssaa_multiplier * FramebufferManagerBase::ScaleToVirtualXfbHeight(y, s_backbuffer_height);
 
 		default:
@@ -162,7 +153,7 @@ int Renderer::EFBToScaledY(int y)
 
 void Renderer::CalculateTargetScale(int x, int y, int &scaledX, int &scaledY)
 {
-	if (g_ActiveConfig.iEFBScale == 0 || g_ActiveConfig.iEFBScale == 1)
+	if (g_ActiveConfig.iEFBScale == SCALE_AUTO || g_ActiveConfig.iEFBScale == SCALE_AUTO_INTEGRAL)
 	{
 		scaledX = x;
 		scaledY = y;
@@ -264,107 +255,105 @@ void Renderer::SetScreenshot(const char *filename)
 void Renderer::DrawDebugText()
 {
 	// OSD Menu messages
-	if (g_ActiveConfig.bOSDHotKey)
+	if (OSDChoice > 0)
 	{
-		if (OSDChoice > 0)
-		{
-			OSDTime = Common::Timer::GetTimeMs() + 3000;
-			OSDChoice = -OSDChoice;
-		}
-		if ((u32)OSDTime > Common::Timer::GetTimeMs())
-		{
-			const char* res_text = "";
-			switch (g_ActiveConfig.iEFBScale)
-			{
-			case 0:
-				res_text = "Auto (fractional)";
-				break;
-			case 1:
-				res_text = "Auto (integral)";
-				break;
-			case 2:
-				res_text = "Native";
-				break;
-			case 3:
-				res_text = "1.5x";
-				break;
-			case 4:
-				res_text = "2x";
-				break;
-			case 5:
-				res_text = "2.5x";
-				break;
-			case 6:
-				res_text = "3x";
-				break;
-			case 7:
-				res_text = "4x";
-				break;
-			}
-
-			const char* ar_text = "";
-			switch(g_ActiveConfig.iAspectRatio)
-			{
-			case ASPECT_AUTO:
-				ar_text = "Auto";
-				break;
-			case ASPECT_FORCE_16_9:
-				ar_text = "16:9";
-				break;
-			case ASPECT_FORCE_4_3:
-				ar_text = "4:3";
-				break;
-			case ASPECT_STRETCH:
-				ar_text = "Stretch";
-				break;
-			}
-
-			const char* const efbcopy_text = g_ActiveConfig.bEFBCopyEnable ?
-				(g_ActiveConfig.bCopyEFBToTexture ? "to Texture" : "to RAM") : "Disabled";
-
-			// The rows
-			const std::string lines[] =
-			{
-				std::string("3: Internal Resolution: ") + res_text,
-				std::string("4: Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""),
-				std::string("5: Copy EFB: ") + efbcopy_text,
-				std::string("6: Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"),
-			};
-
-			enum { lines_count = sizeof(lines)/sizeof(*lines) };
-
-			std::string final_yellow, final_cyan;
-
-			// If there is more text than this we will have a collision
-			if (g_ActiveConfig.bShowFPS)
-			{
-				final_yellow = final_cyan = "\n\n";
-			}
-
-			// The latest changed setting in yellow
-			for (int i = 0; i != lines_count; ++i)
-			{
-				if (OSDChoice == -i - 1)
-					final_yellow += lines[i];
-				final_yellow += '\n';
-			}
-
-			// The other settings in cyan
-			for (int i = 0; i != lines_count; ++i)
-			{
-				if (OSDChoice != -i - 1)
-					final_cyan += lines[i];
-				final_cyan += '\n';
-			}
-
-			// Render a shadow
-			g_renderer->RenderText(final_cyan.c_str(), 21, 21, 0xDD000000);
-			g_renderer->RenderText(final_yellow.c_str(), 21, 21, 0xDD000000);
-			//and then the text
-			g_renderer->RenderText(final_cyan.c_str(), 20, 20, 0xFF00FFFF);
-			g_renderer->RenderText(final_yellow.c_str(), 20, 20, 0xFFFFFF00);
-		}
+		OSDTime = Common::Timer::GetTimeMs() + 3000;
+		OSDChoice = -OSDChoice;
 	}
+
+	if ((u32)OSDTime <= Common::Timer::GetTimeMs())
+		return;
+
+	const char* res_text = "";
+	switch (g_ActiveConfig.iEFBScale)
+	{
+	case SCALE_AUTO:
+		res_text = "Auto (fractional)";
+		break;
+	case SCALE_AUTO_INTEGRAL:
+		res_text = "Auto (integral)";
+		break;
+	case SCALE_1X:
+		res_text = "Native";
+		break;
+	case SCALE_1_5X:
+		res_text = "1.5x";
+		break;
+	case SCALE_2X:
+		res_text = "2x";
+		break;
+	case SCALE_2_5X:
+		res_text = "2.5x";
+		break;
+	case SCALE_3X:
+		res_text = "3x";
+		break;
+	case SCALE_4X:
+		res_text = "4x";
+		break;
+	}
+
+	const char* ar_text = "";
+	switch(g_ActiveConfig.iAspectRatio)
+	{
+	case ASPECT_AUTO:
+		ar_text = "Auto";
+		break;
+	case ASPECT_FORCE_16_9:
+		ar_text = "16:9";
+		break;
+	case ASPECT_FORCE_4_3:
+		ar_text = "4:3";
+		break;
+	case ASPECT_STRETCH:
+		ar_text = "Stretch";
+		break;
+	}
+
+	const char* const efbcopy_text = g_ActiveConfig.bEFBCopyEnable ?
+		(g_ActiveConfig.bCopyEFBToTexture ? "to Texture" : "to RAM") : "Disabled";
+
+	// The rows
+	const std::string lines[] =
+	{
+		std::string("3: Internal Resolution: ") + res_text,
+		std::string("4: Aspect Ratio: ") + ar_text + (g_ActiveConfig.bCrop ? " (crop)" : ""),
+		std::string("5: Copy EFB: ") + efbcopy_text,
+		std::string("6: Fog: ") + (g_ActiveConfig.bDisableFog ? "Disabled" : "Enabled"),
+	};
+
+	enum { lines_count = sizeof(lines)/sizeof(*lines) };
+
+	std::string final_yellow, final_cyan;
+
+	// If there is more text than this we will have a collision
+	if (g_ActiveConfig.bShowFPS)
+	{
+		final_yellow = final_cyan = "\n\n";
+	}
+
+	// The latest changed setting in yellow
+	for (int i = 0; i != lines_count; ++i)
+	{
+		if (OSDChoice == -i - 1)
+			final_yellow += lines[i];
+		final_yellow += '\n';
+	}
+
+	// The other settings in cyan
+	for (int i = 0; i != lines_count; ++i)
+	{
+		if (OSDChoice != -i - 1)
+			final_cyan += lines[i];
+		final_cyan += '\n';
+	}
+
+	// Render a shadow
+	g_renderer->RenderText(final_cyan.c_str(), 21, 21, 0xDD000000);
+	g_renderer->RenderText(final_yellow.c_str(), 21, 21, 0xDD000000);
+	//and then the text
+	g_renderer->RenderText(final_cyan.c_str(), 20, 20, 0xFF00FFFF);
+	g_renderer->RenderText(final_yellow.c_str(), 20, 20, 0xFFFFFF00);
 }
 
 // TODO: remove
