@@ -4,6 +4,7 @@
 
 #include "GCPadEmu.h"
 #include "../Host.h"
+#include "../../../build/server/MessagePipe.h"
 
 const u16 button_bitmasks[] =
 {
@@ -52,6 +53,7 @@ const char* const named_triggers[] =
 
 GCPad::GCPad(const unsigned int index) : m_index(index)
 {
+  m_prevX = m_prevY = 0x80;
 	int const mic_hax = index > 1;
 
 	// buttons
@@ -87,33 +89,75 @@ std::string GCPad::GetName() const
 	return std::string("GCPad") + char('1'+m_index);
 }
 
+void GCPad::UpdateButtonsFromMessages(unsigned short* buttons, unsigned char* x, unsigned char* y)
+{
+  MessageStack messageStack = MessagePipe::Instance().FilteredStack('k', m_index + 1);
+
+  *buttons = m_prevButtons;
+  bool updateStick = false;
+  if (!messageStack.IsEmpty())
+  {
+    *buttons = 0;
+    updateStick = true;
+  }
+
+  while (!messageStack.IsEmpty())
+  {
+    unsigned short mask;
+    std::string message = messageStack.Pop();
+    char code;
+    int player;
+    std::istringstream iss(message);
+    iss >> player >> code >> mask;
+    *buttons |= mask;
+  }
+
+  if (updateStick)
+  {
+    *x = min(255,(1 - sign(*buttons & PAD_BUTTON_LEFT) + sign(*buttons & PAD_BUTTON_RIGHT)) * 0x80);
+    *y = min(255,(1 - sign(*buttons & PAD_BUTTON_DOWN) + sign(*buttons & PAD_BUTTON_UP)) * 0x80);
+    m_prevX = *x;
+    m_prevY = *y;
+  }
+  else
+  {
+    *x = m_prevX;
+    *y = m_prevY;
+  }
+  *buttons &= ~0xF; // disable d pad
+  m_prevButtons = *buttons;
+}
+
 void GCPad::GetInput(SPADStatus* const pad)
 {
 	// if window has focus or background input enabled
-	if (Host_RendererHasFocus() || m_options[0].settings[0]->value)
+	//if (Host_RendererHasFocus() || m_options[0].settings[0]->value)
 	{
 		// buttons
-		m_buttons->GetState(&pad->button, button_bitmasks);
+		//m_buttons->GetState(&pad->button, button_bitmasks);
 
 		// set analog A/B analog to full or w/e, prolly not needed
-		if (pad->button & PAD_BUTTON_A) pad->analogA = 0xFF;
-		if (pad->button & PAD_BUTTON_B) pad->analogB = 0xFF;
+		//if (pad->button & PAD_BUTTON_A) pad->analogA = 0xFF;
+		//if (pad->button & PAD_BUTTON_B) pad->analogB = 0xFF;
 
 		// dpad
-		m_dpad->GetState(&pad->button, dpad_bitmasks);
+		//m_dpad->GetState(&pad->button, dpad_bitmasks);
 
 		// sticks
-		m_main_stick->GetState(&pad->stickX, &pad->stickY, 0x80, 127);
-		m_c_stick->GetState(&pad->substickX, &pad->substickY, 0x80, 127);
+		//m_main_stick->GetState(&pad->stickX, &pad->stickY, 0x80, 127);
+		//m_c_stick->GetState(&pad->substickX, &pad->substickY, 0x80, 127);
 
 		// triggers
-		m_triggers->GetState(&pad->button, trigger_bitmasks, &pad->triggerLeft, 0xFF);
+		//m_triggers->GetState(&pad->button, trigger_bitmasks, &pad->triggerLeft, 0xFF);
+
+    UpdateButtonsFromMessages(&pad->button, &pad->stickX, &pad->stickY);
+    memset(&pad->substickX, 0x80, 2);
 	}
-	else
-	{
-		// center sticks
-		memset(&pad->stickX, 0x80, 4);
-	}
+	//else
+	//{
+	//	// center sticks
+	//	memset(&pad->stickX, 0x80, 4);
+	//}
 }
 
 void GCPad::SetMotor(const u8 on)

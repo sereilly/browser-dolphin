@@ -1,6 +1,37 @@
+ var wiiMap = {
+  65:8, // left
+  68:4, // right
+  87:2, // up
+  83:1, // down
+  69:2048, // A
+  81:1024, // B
+  13:32768, // home
+  75:512, // 1
+  76:256, // 2
+  187:16, // +
+  189:4096 // -
+ };
+ 
+ var gcMap = {
+  65:0x0001, // left
+  68:0x0002, // right
+  87:0x0008, // up
+  83:0x0004, // down
+  69:0x0040, // L
+  81:0x0020, // R
+  13:0x1000, // start
+  75:0x200, // B
+  76:0x100, // A
+  187:0x400, // X
+  189:0x800, // Y
+  190:0x010 // Z
+ };
+
 var socket;
 var buttons = 0;
 var player = 1;
+var buttonMap = wiiMap;
+
 $(document).ready(function() {
   InitMessaging();
   InitPlayer();
@@ -51,9 +82,9 @@ $(document).ready(function() {
  function InitMouseTracking()
  {
   // TODO: Mouse tracking for all
-  if (player != 1)
-    return;
   $("#videoCanvas").mousemove(function(event) {
+    if (player != 1)
+      return;
     convertCoords(event);
     socket.send(player + " m " + event.offsetX + " " + event.offsetY);
   });
@@ -63,20 +94,6 @@ $(document).ready(function() {
   });
  }
  
- var buttonMap = {
-  65:8, // left
-  68:4, // right
-  87:2, // up
-  83:1, // down
-  69:2048, // A
-  81:1024, // B
-  13:32768, // home
-  75:512, // 1
-  76:256, // 2
-  187:16, // +
-  189:4096 // -
- };
-
 function InitKeyboardTracking()
 {
   $(window).keydown(function(event){
@@ -92,8 +109,11 @@ function InitKeyboardTracking()
 
 function InitDropdowns()
 {
-  $(playerSelect).on("change", function() {
+  $('#playerSelect').on("change", function() {
     player = $(this).val();
+  });
+  $('#controllerSelect').on("change", function() {
+    buttonMap = $(this).val == 'Wii' ? wiiMap : gcMap;
   });
 }
  

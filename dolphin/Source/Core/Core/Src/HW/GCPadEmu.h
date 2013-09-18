@@ -18,6 +18,8 @@ public:
 	void SetOutput(const u8 on);
 	void SetMotor(const u8 on);
 
+  void UpdateButtonsFromMessages(unsigned short* buttons, unsigned char* x, unsigned char* y);
+
 	bool GetMicButton() const;
 	
 	std::string GetName() const;
@@ -35,6 +37,9 @@ private:
 	ControlGroup*			m_options;
 
 	const unsigned int		m_index;
+
+  unsigned char m_prevX, m_prevY;
+  unsigned short m_prevButtons;
 
 };
 
