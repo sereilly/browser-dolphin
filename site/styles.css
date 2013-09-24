@@ -16,21 +16,21 @@ a:hover,
 a:focus{
     text-decoration:underline;
 }
-footer{
-    margin-top:-16px;
-    text-align:center;
-}
 .content{
     margin:auto;
-    width:812px;
+    width:765px;
     padding:16px 8px;
-    background:#fff;
+    background:#bef;
+    border-radius:8px;
 }
 .box{
     position:relative;
-    width:780px;
+    width:736px;
     height:480px;
-    margin:0 auto 32px;
+    margin:0 auto;
+}
+.box:first-child{
+    margin:0 auto 16px;
 }
 .box-buttons{
     position:absolute;
@@ -40,15 +40,15 @@ footer{
 }
 .box-buttons a{
     display:block;
-    width:140px;
-    height:80px;
-    margin-bottom:27px;
-    padding-top:60px;
+    width:96px;
+    height:67px;
+    margin-bottom:5px;
+    padding-top:25px;
     text-decoration:none;
     border-radius:8px 0 0 8px;
-    border-top:1px solid #666;
+    /*border-top:1px solid #666;
     border-left:1px solid #666;
-    border-bottom:1px solid #666;
+    border-bottom:1px solid #666;*/
 }
 .box-content{
     position:absolute;
@@ -56,7 +56,9 @@ footer{
     height:100%;
     top:0;
     right:0;
+    overflow:hidden;
     background:#666;
+    border-radius:0 8px 8px 8px;
 }
 .games{
     width:100%;
@@ -65,28 +67,35 @@ footer{
 
 }
 .games a{
-    
+    display:inline-block;
+    width:100%;
+    margin:0 0 -4px;
+    padding:0.25em 0;
 }
-.games li:nth-child(even){
-    background:#333;
-    color:#eee;
+.games a:nth-child(even){
+    background:#aaa;
 }
-.games li:nth-child(odd){
+.games a:nth-child(odd){
+
 }
 .columns{
 
 }
-.columns *{
-    float:left;
+.columns{
+    
 }
-div[class*="threequarters"]{
+.threequarters{
+    float:left;
     width:75%;
 }
-div[class*="half"]{
+.half{
+    float:left;
     width:50%;
 }
-div[class*="onequarter"]{
+.onequarter{
+    float:left;
     width:25%;
+    font-size:0.75em;
 }
 
 .wii,
@@ -98,7 +107,7 @@ a[href^="#wii"]:visited{
 }
 a[href^="#wii"]:hover,
 a[href^="#wii"]:focus{
-    background:#f2f2f2;
+    background:#f8f8f8;
 }
 a[href^="#wii"]:active{
     background:#ddd;
