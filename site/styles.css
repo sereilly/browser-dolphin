@@ -17,6 +17,7 @@ a:focus{
     text-decoration:underline;
 }
 footer{
+    margin-top:-16px;
     text-align:center;
 }
 .content{
@@ -75,11 +76,17 @@ footer{
 .columns{
 
 }
-div[class|="threequarters"]{
-
+.columns *{
+    float:left;
 }
-div[class|="onequarter"]{
-
+div[class*="threequarters"]{
+    width:75%;
+}
+div[class*="half"]{
+    width:50%;
+}
+div[class*="onequarter"]{
+    width:25%;
 }
 
 .wii,
