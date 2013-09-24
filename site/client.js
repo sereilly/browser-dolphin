@@ -95,6 +95,30 @@ $f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
     }
 });
 
+$f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
+ 
+    clip: {
+        url: 'audio',
+        live: true,
+        // configure clip to use influxis as our provider, it uses our rtmp plugin
+        provider: 'influxis',
+        bufferLength : 0, 
+        autoPlay: true
+    },
+ 
+    // streaming plugins are configured under the plugins node
+    plugins: {
+ 
+        // here is our rtpm plugin configuration
+        influxis: {
+            url: "flowplayer.rtmp-3.2.12.swf",
+ 
+            // netConnectionUrl defines where the streams are found
+            netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
+        }
+    }
+});
+
  }
  
  function convertCoords(event)
