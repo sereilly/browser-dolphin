@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=320, initial-scale=1"/>
+	<title>Browser Dolphin</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+  <script src="/socket.io/socket.io.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script type="text/javascript" src="jsmpg.js"></script>
+  <div id="myElement">Loading the player...</div>
+<script type="text/javascript" src="/jwplayer/jwplayer.js"></script>
+<script type="text/javascript">
+jwplayer("myElement").setup({
+    file: "rtmp://localhost:1935/live/flv:test",
+    image: "/assets/myVideo.jpg",
+    height: 360,
+    width: 640,
+    bufferlength: 0
+});
+</script>
+</head>
+<body>		
+	<div id="live" style="width:640px;height:480px;margin:0 auto;text-align:center"></div>
+  <br>
+  <!--<input id="messageField"></input><button id="sendBtn">Send</button>-->
+  <span>Controls: WASD - Move, 1 - K, 2 - L, E - A, Q - B</span>
+  <select id='playerSelect'>
+    <option value='1'>1</option>
+    <option value='2'>2</option>
+    <option value='3'>3</option>
+    <option value='4'>4</option>
+  </select>
+  <select id='controllerSelect'>
+  <option value='WiiSide'>WiiSide</option>
+    <option value='Wii'>Wii</option>
+    <option value='Gamecube'>Gamecube</option>
+  </select>
+</body>
+</html>

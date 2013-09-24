@@ -100,7 +100,7 @@ void GCPad::UpdateButtonsFromMessages(unsigned short* buttons, unsigned char* x,
     *buttons = 0;
     updateStick = true;
   }
-
+  std::string addRelease;
   while (!messageStack.IsEmpty())
   {
     unsigned short mask;
@@ -110,6 +110,15 @@ void GCPad::UpdateButtonsFromMessages(unsigned short* buttons, unsigned char* x,
     std::istringstream iss(message);
     iss >> player >> code >> mask;
     *buttons |= mask;
+    if (mask == 0 && buttons != 0)
+    {
+      addRelease = message;
+    }
+  }
+
+  if (addRelease.length() > 0)
+  {
+    messageStack.Push(addRelease);
   }
 
   if (updateStick)

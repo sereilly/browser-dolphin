@@ -390,7 +390,7 @@ void Wiimote::UpdateButtonsFromMessages(wm_core* buttons)
   {
     *buttons = 0;
   }
-
+  std::string addRelease;
   while (!messageStack.IsEmpty())
   {
     wm_core mask;
@@ -400,6 +400,16 @@ void Wiimote::UpdateButtonsFromMessages(wm_core* buttons)
     std::istringstream iss(message);
     iss >> player >> code >> mask;
     *buttons |= mask;
+
+    if (mask == 0 && buttons != 0)
+    {
+      addRelease = message;
+    }
+  }
+
+  if (addRelease.length() > 0)
+  {
+    messageStack.Push(addRelease);
   }
 }
 

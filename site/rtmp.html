@@ -1,0 +1,73 @@
+
+
+
+
+<!doctype html>
+<html>
+<head>
+    
+    <title>Basic RTMP with hddn : Flowplayer</title>
+
+    <link rel="shortcut icon" href="http://flash.flowplayer.org/favicon.ico">
+    <!-- standalone page styling. can be removed -->
+    <style>
+        body{
+            width:982px;
+            margin:50px auto;
+            font-family:sans-serif;
+        }
+        a:active {
+            outline:none;
+        }
+        :focus { -moz-outline-style:none; }
+
+        .palert {
+            padding: 12px;
+            color: black;
+            background-color: #ededed;
+            box-shadow: none;
+        }
+    </style>
+
+    
+    
+    <!-- flowplayer javascript component -->
+    <script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>
+
+    </head>
+
+<body>
+    <!-- widescreen container, 560x240 (clip dimensions) * 1.15, center splash -->
+<div id="live" style="width:644px;height:276px;margin:0 auto;text-align:center">
+loading
+</div>
+<script>
+
+$f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
+ 
+    clip: {
+        url: 'test',
+        live: true,
+        // configure clip to use influxis as our provider, it uses our rtmp plugin
+        provider: 'influxis',
+        bufferLength : 0, 
+        autoPlay: true
+    },
+ 
+    // streaming plugins are configured under the plugins node
+    plugins: {
+ 
+        // here is our rtpm plugin configuration
+        influxis: {
+            url: "flowplayer.rtmp-3.2.12.swf",
+ 
+            // netConnectionUrl defines where the streams are found
+            netConnectionUrl: 'rtmp://localhost:1935/live'
+        }
+    }
+});
+</script>
+
+</body>
+
+</html>

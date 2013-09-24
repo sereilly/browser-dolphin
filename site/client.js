@@ -1,4 +1,18 @@
  var wiiMap = {
+  65:2, // left
+  68:1, // right
+  87:4, // up
+  83:8, // down
+  69:2048, // A
+  81:1024, // B
+  13:32768, // home
+  75:512, // 1
+  76:256, // 2
+  187:16, // +
+  189:4096 // -
+ };
+ 
+  var wiiMapSide = {
   65:8, // left
   68:4, // right
   87:2, // up
@@ -30,7 +44,7 @@
 var socket;
 var buttons = 0;
 var player = 1;
-var buttonMap = wiiMap;
+var buttonMap = wiiMapSide;
 
 $(document).ready(function() {
   InitMessaging();
@@ -56,15 +70,31 @@ $(document).ready(function() {
  
  function InitPlayer()
  {
-  // Show loading notice
-  var canvas = document.getElementById('videoCanvas');
-  var ctx = canvas.getContext('2d');
-  ctx.fillStyle = '#444';
-  ctx.fillText('Loading...', canvas.width/2-30, canvas.height/3);
 
-  // Setup the WebSocket connection and start the player
-  var client = new WebSocket( 'ws://' + window.location.hostname + ":8084/" );
-  var player = new jsmpeg(client, {canvas: canvas, autoplay: true, loop: true});
+$f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
+ 
+    clip: {
+        url: 'test',
+        live: true,
+        // configure clip to use influxis as our provider, it uses our rtmp plugin
+        provider: 'influxis',
+        bufferLength : 0, 
+        autoPlay: true
+    },
+ 
+    // streaming plugins are configured under the plugins node
+    plugins: {
+ 
+        // here is our rtpm plugin configuration
+        influxis: {
+            url: "flowplayer.rtmp-3.2.12.swf",
+ 
+            // netConnectionUrl defines where the streams are found
+            netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
+        }
+    }
+});
+
  }
  
  function convertCoords(event)
@@ -113,7 +143,20 @@ function InitDropdowns()
     player = $(this).val();
   });
   $('#controllerSelect').on("change", function() {
-    buttonMap = $(this).val == 'Wii' ? wiiMap : gcMap;
+    switch($(this).val())
+    {
+      case 'Wii':
+      buttonMap = wiiMap;
+      break;
+      case 'WiiSide':
+      buttonMap = wiiMapSide;
+      break;
+      case 'Gamecube':
+      buttonMap = gcMap;
+      break;
+      default:
+      buttonMap = wiiMap;
+    }
   });
 }
  

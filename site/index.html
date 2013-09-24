@@ -6,13 +6,12 @@
 	<link rel="stylesheet" type="text/css" href="style.css">
   <script src="/socket.io/socket.io.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+  <script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>
   <script src="client.js"></script>
   <script type="text/javascript" src="jsmpg.js"></script>
 </head>
 <body>		
-	<canvas id="videoCanvas" width="640" height="480">
-		<p>Please use a browser that supports the Canvas Element</p>
-	</canvas>
+	<div id="live" style="width:640px;height:480px;margin:0 auto;text-align:center"></div>
   <br>
   <!--<input id="messageField"></input><button id="sendBtn">Send</button>-->
   <span>Controls: WASD - Move, 1 - K, 2 - L, E - A, Q - B</span>
@@ -23,6 +22,7 @@
     <option value='4'>4</option>
   </select>
   <select id='controllerSelect'>
+  <option value='WiiSide'>WiiSide</option>
     <option value='Wii'>Wii</option>
     <option value='Gamecube'>Gamecube</option>
   </select>
