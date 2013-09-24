@@ -1,0 +1,132 @@
+body{
+    background:#eee url("images/dimension.png");
+    font-family:Arial,sans-serif;
+}
+ul{
+    margin:0;
+    list-style:none;
+    -webkit-padding-start:0;
+    padding:0;
+}
+a,
+a:link{
+    text-decoration:none;
+}
+a:hover,
+a:focus{
+    text-decoration:underline;
+}
+footer{
+    text-align:center;
+}
+.content{
+    margin:auto;
+    width:812px;
+    padding:16px 8px;
+    background:#fff;
+}
+.box{
+    position:relative;
+    width:780px;
+    height:480px;
+    margin:0 auto 32px;
+}
+.box-buttons{
+    position:absolute;
+    top:0;
+    left:0;
+    text-align:center;
+}
+.box-buttons a{
+    display:block;
+    width:140px;
+    height:80px;
+    margin-bottom:27px;
+    padding-top:60px;
+    text-decoration:none;
+    border-radius:8px 0 0 8px;
+    border-top:1px solid #666;
+    border-left:1px solid #666;
+    border-bottom:1px solid #666;
+}
+.box-content{
+    position:absolute;
+    width:640px;
+    height:100%;
+    top:0;
+    right:0;
+    background:#666;
+}
+.games{
+    width:100%;
+}
+.games li{
+
+}
+.games a{
+    
+}
+.games li:nth-child(even){
+    background:#333;
+    color:#eee;
+}
+.games li:nth-child(odd){
+}
+.columns{
+
+}
+div[class|="threequarters"]{
+
+}
+div[class|="onequarter"]{
+
+}
+
+.wii,
+a[href^="#wii"],
+a[href^="#wii"]:link,
+a[href^="#wii"]:visited{
+    background:#eee;
+    color:#333;
+}
+a[href^="#wii"]:hover,
+a[href^="#wii"]:focus{
+    background:#f2f2f2;
+}
+a[href^="#wii"]:active{
+    background:#ddd;
+}
+
+.gamecube,
+a[href^="#gamecube"],
+a[href^="#gamecube"]:link,
+a[href^="#gamecube"]:visited{
+    background:#64b;
+    color:#edf;
+}
+a[href^="#gamecube"]:hover,
+a[href^="#gamecube"]:focus{
+    background:#65b;
+}
+a[href^="#gamecube"]:active{
+    background:#54a;
+}
+
+.n64,
+a[href^="#n64"],
+a[href^="#n64"]:link,
+a[href^="#n64"]:visited{
+    background:#333;
+    color:#eee;
+}
+a[href^="#n64"]:hover,
+a[href^="#n64"]:focus{
+    background:#444;
+}
+a[href^="#n64"]:active{
+    background:#282828;
+}
+
+.hidden{
+    display:none;
+}
