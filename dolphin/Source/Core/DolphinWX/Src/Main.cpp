@@ -35,6 +35,7 @@
 
 #ifdef _WIN32
 #include <shellapi.h>
+#include "../../../build/server/MessagePipe.h"
 
 #ifndef SM_XVIRTUALSCREEN
 #define SM_XVIRTUALSCREEN 76
@@ -70,7 +71,8 @@ extern "C" {
 IMPLEMENT_APP(DolphinApp)
 
 BEGIN_EVENT_TABLE(DolphinApp, wxApp)
-	EVT_TIMER(wxID_ANY, DolphinApp::AfterInit)
+	EVT_TIMER(4850, DolphinApp::AfterInit)
+  EVT_TIMER(4851, DolphinApp::UpdateLoop)
 	EVT_QUERY_END_SESSION(DolphinApp::OnEndSession)
 	EVT_END_SESSION(DolphinApp::OnEndSession)
 END_EVENT_TABLE()
@@ -339,8 +341,11 @@ bool DolphinApp::OnInit()
 	// Postpone final actions until event handler is running.
 	// Updating the game list makes use of wxProgressDialog which may
 	// only be run after OnInit() when the event handler is running.
-	m_afterinit = new wxTimer(this, wxID_ANY);
+	m_afterinit = new wxTimer(this, 4850);
 	m_afterinit->Start(1, wxTIMER_ONE_SHOT);
+
+  m_timer = new wxTimer(this, 4851);
+  m_timer->Start(500);
 
 	return true;
 }
@@ -391,6 +396,22 @@ void DolphinApp::AfterInit(wxTimerEvent& WXUNUSED(event))
 			main_frame->BootGame("");
 		}
 	}
+}
+
+void DolphinApp::UpdateLoop(wxTimerEvent& WXUNUSED(event))
+{
+  MessageStack messageStack = MessagePipe::Instance().FilteredStack('g');
+  while (!messageStack.IsEmpty())
+  {
+    std::string message = messageStack.Pop();
+    int player;
+    char code;
+    std::string game;
+    std::istringstream iss(message);
+    iss >> player >> code >> game;
+    main_frame->DoStop();
+    main_frame->BootGame("D:\\Wii\\" + game + ".iso");
+  }
 }
 
 void DolphinApp::InitLanguageSupport()

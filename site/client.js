@@ -182,5 +182,8 @@ function InitDropdowns()
       buttonMap = wiiMap;
     }
   });
+  $('#gameSelect').on('change', function() {
+    socket.send(player + " g " + $(this).val());
+  });
 }
  

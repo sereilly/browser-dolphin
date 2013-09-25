@@ -25,6 +25,7 @@ private:
 	DECLARE_EVENT_TABLE()
 
 	wxTimer *m_afterinit;
+  wxTimer *m_timer;
 	bool BatchMode;
 	bool LoadFile;
 	bool playMovie;
@@ -33,6 +34,7 @@ private:
 	wxLocale *m_locale;
 
 	void AfterInit(wxTimerEvent& WXUNUSED(event));
+  void UpdateLoop(wxTimerEvent& WXUNUSED(event));
 	void OnEndSession(wxCloseEvent& event);
 };
 
