@@ -1,15 +1,16 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<meta name="viewport" content="width=320, initial-scale=1"/>
+	<meta name="viewport" content="width=768, initial-scale=1"/>
 	<title>Dolphin Online</title>
 	<link rel="stylesheet" type="text/css" href="styles.css">
   <link href='http://fonts.googleapis.com/css?family=Raleway:400,200,800' rel='stylesheet' type='text/css'>
-  <!--<script src="/socket.io/socket.io.js"></script>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>
-  <script src="client.js"></script>
-  <script type="text/javascript" src="jsmpg.js"></script>-->
+  <!--<script src="/socket.io/socket.io.js"></script>-->
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+  <!--<script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>-->
+  <!--<script src="client.js"></script>-->
+  <script src="controller.js"></script>
+  <!--<script type="text/javascript" src="jsmpg.js"></script>-->
 </head>
 <body>		
 	<!--
@@ -53,13 +54,13 @@
         <div class="columns">
           <ul class="wii games">
             <li>
-              <a href="#wii-sideways_R2DEEB">
+              <a href="#wii-sideways" data-gameid="R2DEEB">
                 <div class="threequarters">Dokapon Kingdom</div>
                 <div class="onequarter">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
               </a>
             </li>
             <li>
-              <a href="#gamecube_RSBE01">
+              <a href="#gamecube" data-gameid="RSBE01">
                 <div class="threequarters">Super Smash Bros Brawl</div>
                 <div class="onequarter">&#9733; &#9733; &#9733; &#9734; &#9734;</div>
               </a>
@@ -67,7 +68,7 @@
           </ul>
           <ul class="gamecube games hidden">
             <li>
-              <a href="#gamecube_GALE01">
+              <a href="#gamecube" data-gameid="GALE01">
                 <div class="threequarters">Super Smash Bros Melee</div>
                 <div class="onequarter">&#9733; &#9733; &#9733; &#9733; &#9734;</div>
               </a>
@@ -75,7 +76,7 @@
           </ul>
           <ul class="n64 games hidden">
             <li>
-              <a href="#n64_H987">
+              <a href="#n64" data-gameid="H987">
                 <div class="threequarters">Mario Kart 64</div>
                 <div class="onequarter">&#9733; &#9733; &#9733; &#9733; &#9734;</div>
               </a>

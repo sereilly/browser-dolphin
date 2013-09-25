@@ -17,9 +17,12 @@ a:focus{
     text-decoration:underline;
 }
 .content{
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
     margin:auto;
-    width:765px;
-    padding:76px 8px 16px;
+    width:768px;
+    padding:76px 16px 1px;
     background:#bef;
     border-radius:8px;
 }
@@ -37,6 +40,10 @@ a:focus{
     font-size:12px;
     color:#3dd;
     text-transform:uppercase;
+}
+.streaminfo::selection,
+.streaminfo ::selection{
+    background:transparent;
 }
 .streaminfo *{
     font-size:20px;
@@ -65,6 +72,14 @@ a:focus{
 }
 .playernumber a:active{
     color:#3cc;
+}
+.box{
+    position:relative;
+    margin:24px 0;
+    width:736px;
+}
+.box:first-child{
+    margin:0 auto 16px;
 }
 .box-buttons{
     position:absolute;

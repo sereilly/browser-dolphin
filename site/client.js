@@ -139,7 +139,7 @@ function InitKeyboardTracking()
 
 function InitDropdowns()
 {
-  $('#playerSelect').on("change", function() {
+  /*$('#playerSelect').on("change", function() {
     player = $(this).val();
   });
   $('#controllerSelect').on("change", function() {
@@ -157,6 +157,10 @@ function InitDropdowns()
       default:
       buttonMap = wiiMap;
     }
-  });
+  });*/
+ $(".games li a").click(function(){
+    var gameid = this.attr("data-gameid");
+    alert(gameid);
+ });
 }
  
