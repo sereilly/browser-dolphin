@@ -5,49 +5,32 @@
 	<title>Dolphin Online</title>
 	<link rel="stylesheet" type="text/css" href="styles.css">
   <link href='http://fonts.googleapis.com/css?family=Raleway:400,200,800' rel='stylesheet' type='text/css'>
-  <!--<script src="/socket.io/socket.io.js"></script>-->
+  <script src="/socket.io/socket.io.js"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-  <!--<script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>-->
-  <!--<script src="client.js"></script>-->
-  <script src="controller.js"></script>
-  <!--<script type="text/javascript" src="jsmpg.js"></script>-->
+  <script src="http://releases.flowplayer.org/js/flowplayer-3.2.12.min.js"></script>
+  <script src="client.js"></script>
+  <script type="text/javascript" src="jsmpg.js"></script>
 </head>
-<body>		
-	<!--
-  <div id="live" style="width:640px;height:480px;margin:0 auto;text-align:center"></div>
-  <br>
-  <span>Controls: WASD - Move, 1 - K, 2 - L, E - A, Q - B</span>
-  <select id='playerSelect'>
-    <option value='1'>1</option>
-    <option value='2'>2</option>
-    <option value='3'>3</option>
-    <option value='4'>4</option>
-  </select>
-  <select id='controllerSelect'>
-  <option value='WiiSide'>WiiSide</option>
-    <option value='Wii'>Wii</option>
-    <option value='Gamecube'>Gamecube</option>
-  </select>
-  -->
+<body>
   <div class="content">
     <div class="box">
       <div class="streaminfo currentgame">Currently playing <span id="gamename">Dokapon Kingdom</span></div>
-      <div class="streaminfo playernumber">Player<a id="playenNumber">1</a></div>
+      <div class="streaminfo playernumber">Player <a id="playernumber">1</a></div>
       <div class="box-buttons">
-        <ul>
-          <li><a href="#wii-upright">Wii<br>Controller</a></li>
-          <li><a href="#gamecube">Gamecube<br>Controller</a></li>
-          <li><a href="#n64">N64<br>Controller</a></li>
+        <ul class="controllers">
+          <li><a href="#wii" data-controllerid="wii" class="selected">Wii<br>Controller</a></li>
+          <li><a href="#gamecube" data-controllerid="gamecube">Gamecube<br>Controller</a></li>
+          <li><a href="#n64" data-controllerid="n64">N64<br>Controller</a></li>
         </ul>
       </div>
       <div id="live" class="box-content stream"></div>
     </div>
     <div class="box">
       <div class="box-buttons">
-        <ul>
-          <li><a href="#wii-upright">Wii<br>Games</a></li>
-          <li><a href="#gamecube">Gamecube<br>Games</a></li>
-          <li><a href="#n64">N64<br>Games</a></li>
+        <ul class="media">
+          <li><a href="#wii-upright" data-mediumid="wii" class="selected">Wii<br>Games</a></li>
+          <li><a href="#gamecube" data-mediumid="gamecube">Gamecube<br>Games</a></li>
+          <li><a href="#n64" data-mediumid="n64">N64<br>Games</a></li>
         </ul>
       </div>
       <div class="box-content">
@@ -62,7 +45,7 @@
             <li>
               <a href="#gamecube" data-gameid="RSBE01">
                 <div class="threequarters">Super Smash Bros Brawl</div>
-                <div class="onequarter">&#9733; &#9733; &#9733; &#9734; &#9734;</div>
+                <div class="onequarter">&#9733; &#9733; &#9734; &#9734; &#9734;</div>
               </a>
             </li>
           </ul>
@@ -78,7 +61,7 @@
             <li>
               <a href="#n64" data-gameid="H987">
                 <div class="threequarters">Mario Kart 64</div>
-                <div class="onequarter">&#9733; &#9733; &#9733; &#9733; &#9734;</div>
+                <div class="onequarter">&#9733; &#9733; &#9733; &#9734; &#9734;</div>
               </a>
             </li>
           </ul>

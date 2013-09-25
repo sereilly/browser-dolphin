@@ -1,7 +1,7 @@
 JS continuous
-#gamename
-#playernumber
-#live
+#gamename --> ??
+#playernumber --> player
+#live <-- stream
 data-gameid == R2DEEB --> Dokapon Kingdom
 data-gameid == RSBE01 --> Super Smash Bros Brawl
 date-gameid == GALE01 --> Super Smash Bros Melee
