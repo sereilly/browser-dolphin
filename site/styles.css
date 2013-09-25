@@ -1,6 +1,6 @@
 body{
     background:#eee url("images/dimension.png");
-    font-family:Arial,sans-serif;
+    font-family:Raleway,sans-serif;
 }
 ul{
     margin:0;
@@ -19,7 +19,7 @@ a:focus{
 .content{
     margin:auto;
     width:765px;
-    padding:16px 8px;
+    padding:76px 8px 16px;
     background:#bef;
     border-radius:8px;
 }
@@ -31,6 +31,40 @@ a:focus{
 }
 .box:first-child{
     margin:0 auto 16px;
+}
+.streaminfo{
+    position:absolute;
+    font-weight:200;
+    color:#3dd;
+    text-transform:uppercase;
+}
+.streaminfo *{
+    font-size:20px;
+    font-weight:800;
+    color:#2cc;
+}
+.currentgame{
+    top:-25px;
+    left:100px;
+}
+.playernumber{
+    top:-96px;
+    right:8px;
+}
+.playernumber a,
+.playernumber a:link,
+.playernumber a:visited{
+    font-size:96px;
+    font-weight:800;
+    color:#4cc;
+    text-decoration:none;
+    cursor:pointer;
+}
+.playernumber a:hover{
+    color:#5dd;
+}
+.playernumber a:active{
+    color:#3cc;
 }
 .box-buttons{
     position:absolute;
@@ -70,7 +104,7 @@ a:focus{
     display:inline-block;
     width:100%;
     margin:0 0 -4px;
-    padding:0.25em 0;
+    padding:0.25em 0 .25em 32px;
 }
 .games a:nth-child(even){
     background:#aaa;
@@ -80,9 +114,6 @@ a:focus{
 }
 .columns{
 
-}
-.columns{
-    
 }
 .threequarters{
     float:left;
@@ -122,7 +153,7 @@ a[href^="#gamecube"]:visited{
 }
 a[href^="#gamecube"]:hover,
 a[href^="#gamecube"]:focus{
-    background:#65b;
+    background:#74d;
 }
 a[href^="#gamecube"]:active{
     background:#54a;
