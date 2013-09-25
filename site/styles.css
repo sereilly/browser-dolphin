@@ -26,7 +26,6 @@ a:focus{
 .box{
     position:relative;
     width:736px;
-    height:480px;
     margin:0 auto;
 }
 .box:first-child{
@@ -35,6 +34,7 @@ a:focus{
 .streaminfo{
     position:absolute;
     font-weight:200;
+    font-size:12px;
     color:#3dd;
     text-transform:uppercase;
 }
@@ -85,14 +85,15 @@ a:focus{
     border-bottom:1px solid #666;*/
 }
 .box-content{
-    position:absolute;
-    width:640px;
-    height:100%;
-    top:0;
-    right:0;
+    min-height:305px;
+    height:auto;
+    margin:0 0 0 96px;
     overflow:hidden;
     background:#666;
     border-radius:0 8px 8px 8px;
+}
+.stream{
+    height:480px;
 }
 .games{
     width:100%;
