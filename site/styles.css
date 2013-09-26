@@ -95,9 +95,23 @@ a:focus{
     padding-top:25px;
     text-decoration:none;
     border-radius:8px 0 0 8px;
+    box-shadow:inset 0 -6px 16px -8px #000,inset 0 4px 6px -4px #fff,0 1px 6px -2px #000;
+}
+.box-buttons a,
+.box-buttons a:link,
+.box-buttons a:visited{
+    box-shadow:inset 0 -6px 16px -8px #000,inset 2px 2px 3px -2px #fff,0 1px 4px -2px #000;
+    transition:box-shadow 100ms;
+}
+.box-buttons a:hover,
+.box-buttons a:focus{
+    box-shadow:inset 0 -3px 8px -4px #000,inset 2px 4px 6px -4px #fff,0 1px 2px -2px #000;
+}
+.box-buttons a:active{
+    box-shadow:inset 1px 2px 16px -4px #000;
 }
 .box-buttons .selected{
-    box-shadow:inset 0 0 16px -2px #000;
+    box-shadow:inset 1px 2px 16px -4px #000 !important;
 }
 .box-content{
     min-height:305px;
@@ -106,6 +120,7 @@ a:focus{
     overflow:hidden;
     background:#666;
     border-radius:8px;
+    box-shadow:inset 0 -6px 16px -8px #000,inset 0 4px 6px -4px #fff,0 1px 4px -1px #000;
 }
 .stream{
     height:480px;
@@ -154,10 +169,10 @@ a[href^="#wii"]:visited{
 }
 a[href^="#wii"]:hover,
 a[href^="#wii"]:focus{
-    background:#f8f8f8;
+    background:#f6f6f6;
 }
 a[href^="#wii"]:active{
-    background:#ddd;
+    background:#eee;
 }
 
 .gamecube,
@@ -179,15 +194,15 @@ a[href^="#gamecube"]:active{
 a[href^="#n64"],
 a[href^="#n64"]:link,
 a[href^="#n64"]:visited{
-    background:#333;
+    background:#444;
     color:#eee;
 }
 a[href^="#n64"]:hover,
 a[href^="#n64"]:focus{
-    background:#444;
+    background:#4f4f4f;
 }
 a[href^="#n64"]:active{
-    background:#282828;
+    background:#383838;
 }
 
 .hidden{
