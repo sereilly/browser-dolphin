@@ -66,6 +66,9 @@ $(document).ready(function() {
 			messageField.val('');
 		}
 	});
+  socket.on('game', function(game) {
+    $('#gameSelect').val(game);
+  });
 }
  
  function InitPlayer()
@@ -79,12 +82,15 @@ $f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
         // configure clip to use influxis as our provider, it uses our rtmp plugin
         provider: 'influxis',
         bufferLength : 0, 
-        autoPlay: true
+        autoPlay: true,
+        onBeforePause : function(){
+          return false;
+        }
     },
  
     // streaming plugins are configured under the plugins node
     plugins: {
- 
+        controls: null,
         // here is our rtpm plugin configuration
         influxis: {
             url: "flowplayer.rtmp-3.2.12.swf",
@@ -103,12 +109,14 @@ $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
         // configure clip to use influxis as our provider, it uses our rtmp plugin
         provider: 'influxis',
         bufferLength : 0, 
-        autoPlay: true
+        autoPlay: true,
+        onBeforePause : function(){
+          return false;
+        }
     },
  
     // streaming plugins are configured under the plugins node
     plugins: {
- 
         // here is our rtpm plugin configuration
         influxis: {
             url: "flowplayer.rtmp-3.2.12.swf",
