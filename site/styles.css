@@ -125,26 +125,28 @@ a:focus{
 .stream{
     height:480px;
 }
-.games{
-    width:100%;
-}
-.games li{
-
-}
 .games a{
     display:inline-block;
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
     width:100%;
     margin:0 0 -4px;
     padding:0.25em 0 .25em 32px;
+    background:transparent !important;
+    color:#333 !important;
 }
-.games a:nth-child(even){
-    background:#aaa;
+.games li:nth-child(even){
+    background:#bbb;
 }
-.games a:nth-child(odd){
-
+.games li:nth-child(even):hover{
+    background:#a8a8a8;
 }
-.columns{
-
+.games li:nth-child(odd){
+    background:#fff;
+}
+.games li:nth-child(odd):hover{
+    background:#eaeaea;
 }
 .threequarters{
     float:left;
