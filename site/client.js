@@ -137,7 +137,7 @@ function InitKeyboardTracking()
     console.log(event.keyCode);
     buttons =  buttons | buttonMap[event.keyCode];
     socket.send(player + " k " + buttons);
-  }); 
+  });
   $(window).keyup(function(event){
     buttons = buttons & ~buttonMap[event.keyCode];
     socket.send(player + " k " + buttons);
@@ -145,6 +145,18 @@ function InitKeyboardTracking()
 }
 
 function InitPageControls(){
+  var url = document.URL;
+  if (~url.indexOf("#")) var urlId = url.substr(url.lastIndexOf("#")+1);
+  $("." + urlId).removeClass("hidden");
+  if(urlId == "wiiSide"){
+    $("[data-controllerid^='wii']").addClass("hidden");
+    $("[data-controllerid^='wiiSide']").removeClass("hidden");
+    $("[data-controllerid^='wiiSide']").addClass("selected");
+    $(".columns .wii").removeClass("hidden");
+    $("[href^='#wii']").addClass("selected");
+  }
+  $("[href^='#" + urlId + "']").addClass("selected");
+
   $("#playernumber").click(function(){
     var previousNumber = parseInt(this.innerHTML);
     if(previousNumber >= 4){
@@ -158,8 +170,21 @@ function InitPageControls(){
 
   $(".controllers a").click(function(){
     var controller = $(this).attr("data-controllerid");
+    var previouscontroller = $($(".selected")[0]).attr("data-controllerid");
     for(i = 0;i < $(".controllers a").length;i++){
       $($(".controllers a")[i]).removeClass("selected");
+    }
+    if(previouscontroller == "wii" || "wiiSide"){
+      if(controller == "wii"){
+        $("[data-controllerid^='wii']").addClass("hidden");
+        $("[data-controllerid^='wiiSide']").removeClass("hidden");
+        $("[data-controllerid^='wiiSide']").addClass("selected");
+      } 
+      if(controller == "wiiSide"){
+        $("[data-controllerid^='wii']").removeClass("hidden");
+        $("[data-controllerid^='wiiSide']").addClass("hidden");
+        $("[data-controllerid^='wii']").addClass("selected");
+      }
     }
     $(this).addClass("selected");
     buttonMap = controller + "Map";

@@ -14,11 +14,12 @@
 <body>
   <div class="content">
     <div class="box">
-      <div class="streaminfo currentgame">Currently playing <span id="gamename">Nothing D:</span></div>
+      <div class="streaminfo currentgame">Currently playing <span id="gamename">Nothing :(</span></div>
       <div class="streaminfo playernumber">Player <a id="playernumber">1</a></div>
       <div class="box-buttons">
         <ul class="controllers">
-          <li><a href="#wii" data-controllerid="wii" class="selected">Wii<br>Controller</a></li>
+          <li><a href="#wii" data-controllerid="wii">Wii<br>Controller</a></li>
+          <li><a href="#wiiSide" data-controllerid="wiiSide" class="hidden">Wii<br>Sideways</a></li>
           <li><a href="#gamecube" data-controllerid="gamecube">Gamecube<br>Controller</a></li>
           <li><a href="#n64" data-controllerid="n64">N64<br>Controller</a></li>
         </ul>
@@ -28,16 +29,16 @@
     <div class="box">
       <div class="box-buttons">
         <ul class="media">
-          <li><a href="#wii-upright" data-mediumid="wii" class="selected">Wii<br>Games</a></li>
+          <li><a href="#wii" data-mediumid="wii">Wii<br>Games</a></li>
           <li><a href="#gamecube" data-mediumid="gamecube">Gamecube<br>Games</a></li>
           <li><a href="#n64" data-mediumid="n64">N64<br>Games</a></li>
         </ul>
       </div>
       <div class="box-content">
         <div class="columns">
-          <ul class="wii games">
+          <ul class="wii games hidden">
             <li>
-              <a href="#wii-sideways" data-gameid="R2DEEB">
+              <a href="#wiiSide" data-gameid="R2DEEB">
                 <div class="threequarters">Dokapon Kingdom</div>
                 <div class="onequarter">&#9733; &#9733; &#9733; &#9733; &#9733;</div>
               </a>
