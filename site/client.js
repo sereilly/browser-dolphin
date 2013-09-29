@@ -54,10 +54,10 @@ var player = 1;
 var buttonMap = wiiSideMap;
 
 $(document).ready(function() {
-  InitMessaging();
+  /*InitMessaging();
   InitPlayer();
   InitMouseTracking();
-  InitKeyboardTracking();
+  InitKeyboardTracking();*/
   InitPageControls();
  });
  
@@ -195,8 +195,9 @@ function InitPageControls(){
       this.innerHTML = 1;
       player = 1;
     } else {
-      this.innerHTML = previousNumber += 1;
-      player = previousNumber += 1;
+      previousNumber++;
+      this.innerHTML = previousNumber;
+      player = previousNumber;
     }
   });
 
@@ -219,7 +220,7 @@ function InitPageControls(){
       }
     }
     $(this).addClass("selected");
-    buttonMap = controller + "Map";
+    buttonMap = window[controller + "Map"];
   });
 
   $(".media a").click(function(){
@@ -237,8 +238,6 @@ function InitPageControls(){
   $(".games a").click(function(){
     var gameid = $(this).attr("data-gameid");
     $("#gamename").text(games[gameid]);
-  });
-  $('#gameSelect').on('change', function() {
-    socket.send(player + " g " + $(this).val());
+    socket.send(player + " g " + gameid);
   });
 }
