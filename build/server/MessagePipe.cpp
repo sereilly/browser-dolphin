@@ -69,7 +69,7 @@ MessageStack MessagePipe::FilteredStack( char code, int player )
     int p;
     std::istringstream iss(message);
     iss >> p >> c;
-    if (c == code && p == player)
+    if (c == code && (p == player || player == -1))
     {
       matches.Push(message);
     }

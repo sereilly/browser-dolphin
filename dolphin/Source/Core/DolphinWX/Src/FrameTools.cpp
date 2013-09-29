@@ -1030,7 +1030,7 @@ void CFrame::DoStop()
 		wxMutexGuiEnter();
 #endif
 		// Ask for confirmation in case the user accidentally clicked Stop / Escape
-		if (SConfig::GetInstance().m_LocalCoreStartupParameter.bConfirmStop)
+	/*	if (SConfig::GetInstance().m_LocalCoreStartupParameter.bConfirmStop)
 		{
 			Core::EState state = Core::GetState();
 			Core::SetState(Core::CORE_PAUSE);
@@ -1048,7 +1048,7 @@ void CFrame::DoStop()
 				confirmStop = false;
 				return;
 			}
-		}
+		}*/
 
 		// TODO: Show the author/description dialog here
 		if(Movie::IsRecordingInput())

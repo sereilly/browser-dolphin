@@ -1,2 +1,3 @@
 start node site/server.js
-start ffmpeg -f dshow -i video="Dxtory Video 1":audio="Stereo Mix (Realtek High Defini" -pix_fmt yuv420p -c:v libx264 -an -preset ultrafast -tune zerolatency -fflags nobuffer -f flv "rtmp://localhost:1935/live/test"
+start ffmpeg -f dshow -i video="UScreenCapture" -r 25 -fflags nobuffer -threads 0 -f flv "rtmp://localhost:1935/live/test"
+start ffmpeg -f dshow -i audio="Stereo Mix (Realtek High Defini" -fflags nobuffer -threads 0 -async 1 -c:a libspeex -ac 1 -ar 16k -f flv "rtmp://localhost:1935/live/audio"
