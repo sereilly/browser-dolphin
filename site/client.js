@@ -54,10 +54,10 @@ var player = 1;
 var buttonMap = wiiSideMap;
 
 $(document).ready(function() {
-  /*InitMessaging();
+  InitMessaging();
   InitPlayer();
   InitMouseTracking();
-  InitKeyboardTracking();*/
+  InitKeyboardTracking();
   InitPageControls();
  });
  
