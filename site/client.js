@@ -12,7 +12,7 @@
   189:4096 // -
  };
  
-  var wiiMapSide = {
+  var wiiSideMap = {
   65:8, // left
   68:4, // right
   87:2, // up
@@ -41,17 +41,24 @@
   190:0x010 // Z
  };
 
+ var games = {
+  "R2DEEB":"Dokapon Kingdom",
+  "RSBE01":"Super Smash Bros Brawl",
+  "GALE01":"Super Smash Bros Melee",
+  "H987":"Mario Kart 64"
+};
+
 var socket;
 var buttons = 0;
 var player = 1;
-var buttonMap = wiiMapSide;
+var buttonMap = wiiSideMap;
 
 $(document).ready(function() {
   InitMessaging();
   InitPlayer();
   InitMouseTracking();
   InitKeyboardTracking();
-  InitDropdowns();
+  InitPageControls();
  });
  
  function InitMessaging()
@@ -162,36 +169,76 @@ function InitKeyboardTracking()
     console.log(event.keyCode);
     buttons =  buttons | buttonMap[event.keyCode];
     socket.send(player + " k " + buttons);
-  }); 
+  });
   $(window).keyup(function(event){
     buttons = buttons & ~buttonMap[event.keyCode];
     socket.send(player + " k " + buttons);
   }); 
 }
 
-function InitDropdowns()
-{
-  $('#playerSelect').on("change", function() {
-    player = $(this).val();
-  });
-  $('#controllerSelect').on("change", function() {
-    switch($(this).val())
-    {
-      case 'Wii':
-      buttonMap = wiiMap;
-      break;
-      case 'WiiSide':
-      buttonMap = wiiMapSide;
-      break;
-      case 'Gamecube':
-      buttonMap = gcMap;
-      break;
-      default:
-      buttonMap = wiiMap;
+function InitPageControls(){
+  var url = document.URL;
+  if (~url.indexOf("#")) var urlId = url.substr(url.lastIndexOf("#")+1);
+  $("." + urlId).removeClass("hidden");
+  if(urlId == "wiiSide"){
+    $("[data-controllerid^='wii']").addClass("hidden");
+    $("[data-controllerid^='wiiSide']").removeClass("hidden");
+    $("[data-controllerid^='wiiSide']").addClass("selected");
+    $(".columns .wii").removeClass("hidden");
+    $("[href^='#wii']").addClass("selected");
+  }
+  $("[href^='#" + urlId + "']").addClass("selected");
+
+  $("#playernumber").click(function(){
+    var previousNumber = parseInt(this.innerHTML);
+    if(previousNumber >= 4){
+      this.innerHTML = 1;
+      player = 1;
+    } else {
+      this.innerHTML = previousNumber += 1;
+      player = previousNumber += 1;
     }
+  });
+
+  $(".controllers a").click(function(){
+    var controller = $(this).attr("data-controllerid");
+    var previouscontroller = $($(".selected")[0]).attr("data-controllerid");
+    for(i = 0;i < $(".controllers a").length;i++){
+      $($(".controllers a")[i]).removeClass("selected");
+    }
+    if(previouscontroller == "wii" || "wiiSide"){
+      if(controller == "wii"){
+        $("[data-controllerid^='wii']").addClass("hidden");
+        $("[data-controllerid^='wiiSide']").removeClass("hidden");
+        $("[data-controllerid^='wiiSide']").addClass("selected");
+      } 
+      if(controller == "wiiSide"){
+        $("[data-controllerid^='wii']").removeClass("hidden");
+        $("[data-controllerid^='wiiSide']").addClass("hidden");
+        $("[data-controllerid^='wii']").addClass("selected");
+      }
+    }
+    $(this).addClass("selected");
+    buttonMap = controller + "Map";
+  });
+
+  $(".media a").click(function(){
+    var medium = $(this).attr("data-mediumid");
+    for(i = 0;i < $(".media a").length;i++){
+      $($(".media a")[i]).removeClass("selected");
+    }
+    $(this).addClass("selected");
+    for(i = 0;i < $(".games").length;i++){
+      $($(".games")[i]).addClass("hidden");
+    }
+    $("." + medium).removeClass("hidden");
+  });
+
+  $(".games a").click(function(){
+    var gameid = $(this).attr("data-gameid");
+    $("#gamename").text(games[gameid]);
   });
   $('#gameSelect').on('change', function() {
     socket.send(player + " g " + $(this).val());
   });
 }
- 

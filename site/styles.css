@@ -1,0 +1,210 @@
+body{
+    background:#eee url("images/dimension.png");
+    font-family:Raleway,sans-serif;
+}
+ul{
+    margin:0;
+    list-style:none;
+    -webkit-padding-start:0;
+    padding:0;
+}
+a,
+a:link{
+    text-decoration:none;
+}
+a:hover,
+a:focus{
+    text-decoration:underline;
+}
+.content{
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
+    margin:auto;
+    width:768px;
+    padding:76px 16px 1px;
+    background:#bef;
+    border-radius:8px;
+}
+.box{
+    position:relative;
+    width:736px;
+    margin:0 auto;
+}
+.box:first-child{
+    margin:0 auto 16px;
+}
+.streaminfo{
+    position:absolute;
+    font-weight:200;
+    font-size:12px;
+    color:#3dd;
+    text-transform:uppercase;
+}
+.streaminfo::selection,
+.streaminfo ::selection{
+    background:transparent;
+}
+.streaminfo *{
+    font-size:20px;
+    font-weight:800;
+    color:#2cc;
+}
+.currentgame{
+    top:-25px;
+    left:100px;
+}
+.playernumber{
+    top:-96px;
+    right:8px;
+}
+.playernumber a,
+.playernumber a:link,
+.playernumber a:visited{
+    font-size:96px;
+    font-weight:800;
+    color:#4cc;
+    text-decoration:none;
+    cursor:pointer;
+}
+.playernumber a:hover{
+    color:#5dd;
+}
+.playernumber a:active{
+    color:#3cc;
+}
+.box{
+    position:relative;
+    margin:24px 0;
+    width:736px;
+}
+.box:first-child{
+    margin:0 auto 16px;
+}
+.box-buttons{
+    position:absolute;
+    top:8px;
+    left:0;
+    text-align:center;
+}
+.box-buttons a{
+    display:block;
+    width:96px;
+    height:67px;
+    margin-bottom:5px;
+    padding-top:25px;
+    text-decoration:none;
+    border-radius:8px 0 0 8px;
+    box-shadow:inset 0 -6px 16px -8px #000,inset 0 4px 6px -4px #fff,0 1px 6px -2px #000;
+}
+.box-buttons a,
+.box-buttons a:link,
+.box-buttons a:visited{
+    box-shadow:inset 0 -6px 16px -8px #000,inset 2px 2px 3px -2px #fff,0 1px 4px -2px #000;
+    transition:box-shadow 100ms;
+}
+.box-buttons a:hover,
+.box-buttons a:focus{
+    box-shadow:inset 0 -3px 8px -4px #000,inset 2px 4px 6px -4px #fff,0 1px 2px -2px #000;
+}
+.box-buttons a:active{
+    box-shadow:inset 1px 2px 16px -4px #000;
+}
+.box-buttons .selected{
+    box-shadow:inset 1px 2px 16px -4px #000 !important;
+}
+.box-content{
+    min-height:305px;
+    height:auto;
+    margin:0 0 0 96px;
+    overflow:hidden;
+    background:#666;
+    border-radius:8px;
+    box-shadow:inset 0 -6px 16px -8px #000,inset 0 4px 6px -4px #fff,0 1px 4px -1px #000;
+}
+.stream{
+    height:480px;
+}
+.games{
+    width:100%;
+}
+.games li{
+
+}
+.games a{
+    display:inline-block;
+    width:100%;
+    margin:0 0 -4px;
+    padding:0.25em 0 .25em 32px;
+}
+.games a:nth-child(even){
+    background:#aaa;
+}
+.games a:nth-child(odd){
+
+}
+.columns{
+
+}
+.threequarters{
+    float:left;
+    width:75%;
+}
+.half{
+    float:left;
+    width:50%;
+}
+.onequarter{
+    float:left;
+    width:25%;
+    font-size:0.75em;
+}
+
+.wii,
+a[href^="#wii"],
+a[href^="#wii"]:link,
+a[href^="#wii"]:visited{
+    background:#eee;
+    color:#333;
+}
+a[href^="#wii"]:hover,
+a[href^="#wii"]:focus{
+    background:#f6f6f6;
+}
+a[href^="#wii"]:active{
+    background:#eee;
+}
+
+.gamecube,
+a[href^="#gamecube"],
+a[href^="#gamecube"]:link,
+a[href^="#gamecube"]:visited{
+    background:#64b;
+    color:#edf;
+}
+a[href^="#gamecube"]:hover,
+a[href^="#gamecube"]:focus{
+    background:#74d;
+}
+a[href^="#gamecube"]:active{
+    background:#54a;
+}
+
+.n64,
+a[href^="#n64"],
+a[href^="#n64"]:link,
+a[href^="#n64"]:visited{
+    background:#444;
+    color:#eee;
+}
+a[href^="#n64"]:hover,
+a[href^="#n64"]:focus{
+    background:#4f4f4f;
+}
+a[href^="#n64"]:active{
+    background:#383838;
+}
+
+.hidden{
+    display:none !important;
+}
