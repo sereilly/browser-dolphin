@@ -219,7 +219,7 @@ function InitPageControls(){
       }
     }
     $(this).addClass("selected");
-    buttonMap = controller + "Map";
+    buttonMap = window[controller + "Map"];
   });
 
   $(".media a").click(function(){
