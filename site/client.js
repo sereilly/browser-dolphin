@@ -44,8 +44,7 @@
  var games = {
   "R2DEEB":"Dokapon Kingdom",
   "RSBE01":"Super Smash Bros Brawl",
-  "GALE01":"Super Smash Bros Melee",
-  "H987":"Mario Kart 64"
+  "GALE01":"Super Smash Bros Melee"
 };
 
 var socket;
@@ -80,64 +79,57 @@ $(document).ready(function() {
  
  function InitPlayer()
  {
-
-$f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
- 
+  $f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
     clip: {
-        url: 'test',
-        live: true,
-        // configure clip to use influxis as our provider, it uses our rtmp plugin
-        provider: 'influxis',
-        bufferLength : 0, 
-        autoPlay: true,
-        onBeforePause : function(){
-          return false;
-        }
+      url: 'test',
+      live: true,
+      // configure clip to use influxis as our provider, it uses our rtmp plugin
+      provider: 'influxis',
+      bufferLength : 0, 
+      autoPlay: true,
+      onBeforePause : function(){
+        return false;
+      }
     },
- 
     // streaming plugins are configured under the plugins node
     plugins: {
-        controls: null,
-        // here is our rtpm plugin configuration
-        influxis: {
-            url: "flowplayer.rtmp-3.2.12.swf",
- 
-            // netConnectionUrl defines where the streams are found
-            netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
-        }
+      controls: null,
+      // here is our rtpm plugin configuration
+      influxis: {
+        url: "flowplayer.rtmp-3.2.12.swf",
+        // netConnectionUrl defines where the streams are found
+        netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
+      }
     }
-});
+  });
 
-$f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
- 
+  $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
     clip: {
-        url: 'audio',
-        live: true,
-        // configure clip to use influxis as our provider, it uses our rtmp plugin
-        provider: 'influxis',
-        bufferLength : 0, 
-        autoPlay: true,
-        onBeforePause : function(){
-          return false;
-        }
+      url: 'audio',
+      live: true,
+      // configure clip to use influxis as our provider, it uses our rtmp plugin
+      provider: 'influxis',
+      bufferLength : 0, 
+      autoPlay: true,
+      onBeforePause : function(){
+        return false;
+      }
     },
- 
     // streaming plugins are configured under the plugins node
     plugins: {
-        // here is our rtpm plugin configuration
-        influxis: {
-            url: "flowplayer.rtmp-3.2.12.swf",
- 
-            // netConnectionUrl defines where the streams are found
-            netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
-        }
-    }
-});
+      // here is our rtpm plugin configuration
+      influxis: {
+        url: "flowplayer.rtmp-3.2.12.swf",
 
- }
- 
- function convertCoords(event)
- {
+        // netConnectionUrl defines where the streams are found
+        netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
+      `}
+    }
+  });
+}
+
+function convertCoords(event)
+{
   if (event.offsetX === undefined)
   {
     var canvasOffset = $('#videoCanvas').offset();
@@ -146,10 +138,10 @@ $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
   }
   event.offsetX = event.offsetX / 640.0 * 2 - 1;
   event.offsetY = event.offsetY / 480.0 * 2 - 1;
- }
- 
- function InitMouseTracking()
- {
+}
+
+function InitMouseTracking()
+{
   // TODO: Mouse tracking for all
   $("#videoCanvas").mousemove(function(event) {
     if (player != 1)
@@ -161,7 +153,7 @@ $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
     convertCoords(event);
     //socket.send("c " + event.offsetX + " " + event.offsetY);
   });
- }
+}
  
 function InitKeyboardTracking()
 {
