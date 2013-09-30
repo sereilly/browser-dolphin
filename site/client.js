@@ -26,7 +26,7 @@
   189:4096 // -
  };
  
- var gcMap = {
+ var gamecubeMap = {
   65:0x0001, // left
   68:0x0002, // right
   87:0x0008, // up
