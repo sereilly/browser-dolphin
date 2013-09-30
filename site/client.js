@@ -123,7 +123,7 @@ $(document).ready(function() {
 
         // netConnectionUrl defines where the streams are found
         netConnectionUrl: 'rtmp://' + window.location.hostname + ':1935/live'
-      `}
+      }
     }
   });
 }
