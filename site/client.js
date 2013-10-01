@@ -140,7 +140,7 @@ $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
  {
   if (event.offsetX === undefined)
   {
-    var canvasOffset = $('#videoCanvas').offset();
+    var canvasOffset = $('#live').offset();
     event.offsetX = event.pageX - canvasOffset.left;
     event.offsetY = event.pageY - canvasOffset.top;
   }
@@ -151,13 +151,13 @@ $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
  function InitMouseTracking()
  {
   // TODO: Mouse tracking for all
-  $("#videoCanvas").mousemove(function(event) {
+  $("#live").mousemove(function(event) {
     if (player != 1)
       return;
     convertCoords(event);
     socket.send(player + " m " + event.offsetX + " " + event.offsetY);
   });
-  $("#videoCanvas").mousedown(function(event) {
+  $("#live").mousedown(function(event) {
     convertCoords(event);
     //socket.send("c " + event.offsetX + " " + event.offsetY);
   });
