@@ -95,23 +95,28 @@ a:focus{
     padding-top:25px;
     text-decoration:none;
     border-radius:8px 0 0 8px;
-    box-shadow:inset 0 -6px 16px -8px #000,inset 0 4px 6px -4px #fff,0 1px 6px -2px #000;
 }
 .box-buttons a,
 .box-buttons a:link,
 .box-buttons a:visited{
-    box-shadow:inset 0 -6px 16px -8px #000,inset 2px 2px 3px -2px #fff,0 1px 4px -2px #000;
-    transition:box-shadow 100ms;
+    box-shadow:
+        inset 0 -6px 16px -8px #000,
+        inset 2px 2px 4px -2px #fff,
+        0 1px 4px -2px #000;
+    transition:box-shadow 150ms;
 }
 .box-buttons a:hover,
 .box-buttons a:focus{
-    box-shadow:inset 0 -3px 8px -4px #000,inset 2px 4px 6px -4px #fff,0 1px 2px -2px #000;
+    box-shadow:
+        inset 0 -3px 8px -4px #000,
+        inset 2px 4px 6px -4px #fff,
+        0 1px 2px -2px #000;
 }
 .box-buttons a:active{
     box-shadow:inset 1px 2px 16px -4px #000;
 }
 .box-buttons .selected{
-    box-shadow:inset 1px 2px 16px -4px #000 !important;
+    box-shadow:inset 1px 2px 16px -8px #000 !important;
 }
 .box-content{
     min-height:305px;
@@ -120,7 +125,10 @@ a:focus{
     overflow:hidden;
     background:#666;
     border-radius:8px;
-    box-shadow:inset 0 -6px 16px -8px #000,inset 0 4px 6px -4px #fff,0 1px 4px -1px #000;
+    box-shadow:
+        inset 2px -4px 16px -6px #000,
+        inset -2px 4px 8px -4px #fff,
+        0 1px 4px -1px #000;
 }
 .stream{
     height:480px;
