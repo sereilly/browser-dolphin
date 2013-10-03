@@ -80,6 +80,9 @@ $(document).ready(function() {
  function InitPlayer()
  {
   $f("live", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
+    onBeforeFullscreen: function() {
+      return false;
+    },
     clip: {
       url: 'test',
       live: true,
@@ -104,6 +107,9 @@ $(document).ready(function() {
   });
 
   $f("audio", "http://releases.flowplayer.org/swf/flowplayer-3.2.16.swf", {
+    onBeforeFullscreen: function() {
+        return false;
+    },
     clip: {
       url: 'audio',
       live: true,
@@ -150,8 +156,10 @@ function InitMouseTracking()
     socket.send(player + " m " + event.offsetX + " " + event.offsetY);
   });
   $("#live").mousedown(function(event) {
-    convertCoords(event);
-    //socket.send("c " + event.offsetX + " " + event.offsetY);
+    socket.send(player + " b 1");
+  });
+  $("#live").mouseup(function(event) {
+    socket.send(player + " b 0");
   });
 }
  

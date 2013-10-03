@@ -166,6 +166,50 @@ void GetMousePosFromMessages(float* x, float* y)
   }
 }
 
+void KeyboardMouse::GetMouseButtonsFromMessages( BYTE* rgbButtons )
+{
+  MessageStack messageStack = MessagePipe::Instance().FilteredStack('b', 1);
+ // std::string released;
+ // static BYTE prevInput[8];
+  //memcpy(rgbButtons, prevInput, sizeof(prevInput));
+  
+  //rgbButtons[0] = 0;
+
+  static int timer = 0;
+
+  while (!messageStack.IsEmpty())
+  {
+    
+    std::string message = messageStack.Pop();
+    char code;
+    int player;
+    int i;
+    std::istringstream iss(message);
+    iss >> player >> code >> i;
+ 
+    if (i == 1)
+    {
+      rgbButtons[0] = 0x80;
+    }
+    else if (i == 0 )
+    {
+      timer = 8;
+    }
+  }
+
+  if (timer > 0)
+  {
+    timer--;
+    if (timer == 0)
+      rgbButtons[0] = 0;
+  }
+
+  /*if (released.length() > 0)
+    MessagePipe::Instance().GetMessages().Push(released);
+
+  memcpy(prevInput, rgbButtons, sizeof(prevInput));*/
+}
+
 bool KeyboardMouse::UpdateInput()
 {
 	DIMOUSESTATE2 tmp_mouse;
@@ -198,8 +242,8 @@ bool KeyboardMouse::UpdateInput()
 			((&m_state_in.mouse.lX)[i] += (&tmp_mouse.lX)[i]) /= 2;
 
 		// copy over the buttons
-		memcpy(m_state_in.mouse.rgbButtons, tmp_mouse.rgbButtons, sizeof(m_state_in.mouse.rgbButtons));
-
+		//memcpy(m_state_in.mouse.rgbButtons, tmp_mouse.rgbButtons, sizeof(m_state_in.mouse.rgbButtons));
+    GetMouseButtonsFromMessages(m_state_in.mouse.rgbButtons);
 		// update mouse cursor
 		//GetMousePos(&m_state_in.cursor.x, &m_state_in.cursor.y);
     GetMousePosFromMessages(&m_state_in.cursor.x, &m_state_in.cursor.y);

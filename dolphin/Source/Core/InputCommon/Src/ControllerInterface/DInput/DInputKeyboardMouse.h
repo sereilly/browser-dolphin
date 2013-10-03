@@ -96,7 +96,7 @@ public:
 	std::string GetName() const;
 	int GetId() const;
 	std::string GetSource() const;
-
+  void GetMouseButtonsFromMessages( BYTE* rgbButtons );
 private:
 	const LPDIRECTINPUTDEVICE8	m_kb_device;
 	const LPDIRECTINPUTDEVICE8	m_mo_device;
